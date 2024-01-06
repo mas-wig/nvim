@@ -1,4 +1,4 @@
-local map = vim.keymap.set
+local map, tg = vim.keymap.set, require("utils.toggle")
 
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -168,3 +168,19 @@ map("n", "<leader>bx", function()
 	end
 	vim.notify(string.format("%s %d %s", "Deleted", deleted_count, "buffers"), 2)
 end, { desc = "Close Non-Visible Buffers" })
+
+-- stylua: ignore start
+map("n", "<leader>us", function() tg("spell") end, { desc = "Toggle Spelling" })
+map("n", "<leader>uw", function() tg("wrap") end, { desc = "Toggle Word Wrap" })
+map("n", "<leader>uL", function() tg("relativenumber") end, { desc = "Toggle Relative Line Numbers" })
+map("n", "<leader>ul", function() tg.number() end, { desc = "Toggle Line Numbers" })
+map("n", "<leader>ud", function() tg.diagnostics() end, { desc = "Toggle Diagnostics" })
+
+local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
+map("n", "<leader>uc", function() tg("conceallevel", false, { 0, conceallevel }) end, { desc = "Toggle Conceal" })
+
+if vim.lsp.buf.inlay_hint or vim.lsp.inlay_hint then
+	map("n", "<leader>uh", function() tg.inlay_hints() end, { desc = "Toggle Inlay Hints" })
+end
+map("n", "<leader>uT", function() if vim.b.ts_highlight then vim.treesitter.stop() else vim.treesitter.start() end end, { desc = "Toggle Treesitter Highlight" })
+-- stylua: ignore start

@@ -35,6 +35,14 @@ return {
 		vim.lsp.handlers[method.workspace_symbol] = fzf.lsp_live_workspace_symbols
 		-- stylua: ignore end
 
+		if vim.g.inlay_hints then
+			if client.supports_method(method.textDocument_inlayHint) then
+				require("utils.toggle").inlay_hints(bufnr, true)
+			else
+				return vim.notify_once("Method [textDocument/inlayHint] not\n supported winbar will be disabled!", 2)
+			end
+		end
+
 		if client.server_capabilities.documentSymbolProvider then
 			vim.g.navic_silence = true
 			require("nvim-navic").attach(client, bufnr)

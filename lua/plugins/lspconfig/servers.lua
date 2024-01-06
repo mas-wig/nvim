@@ -8,6 +8,7 @@ return {
 			if not vim.uv.fs_stat(path .. "/.luarc.json") and not vim.uv.fs_stat(path .. "/.luarc.jsonc") then
 				client.config.settings = vim.tbl_deep_extend("force", client.config.settings, {
 					Lua = {
+						hint = { enable = true },
 						runtime = { version = "LuaJIT" },
 						workspace = { checkThirdParty = false, library = { vim.env.VIMRUNTIME } },
 						diagnostic = { enable = false },

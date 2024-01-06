@@ -39,9 +39,9 @@ return {
 			{ "<leader>fr", fzf.registers, desc = "Registers" },
 			{ "<leader>fd", fzf.diagnostics_document, desc = "Document Diagnostics" },
 			{ "<leader>fD", fzf.diagnostics_workspace, desc = "Workspace Diagnostics" },
-			{ "<leader><leader>", fzf.git_files, desc = "Find Git Files" },
 
 			-- git
+			{ "<leader><leader>", fzf.git_files, desc = "Find Git Files" },
 			{ "<leader>hfs", fzf.git_status, desc = "`git status`" },
 			{ "<leader>hfc", fzf.git_commits, desc = "Git Commit Log (project)" },
 			{ "<leader>hfB", fzf.git_branches, desc = "`git branches`" },

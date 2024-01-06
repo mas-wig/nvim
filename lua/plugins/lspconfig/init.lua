@@ -146,16 +146,26 @@ return {
 				}
 
 				local diagIcons = require("utils.icons").diagnostics
+				for name, icon in pairs(diagIcons) do
+					name = "DiagnosticSign" .. name
+					vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+				end
 				vim.diagnostic.config({
 					underline = true,
 					update_in_insert = false,
 					severity_sort = true,
 					signs = {
 						text = {
-							[1] = diagIcons.Error,
-							[2] = diagIcons.Warn,
-							[3] = diagIcons.Hint,
-							[4] = diagIcons.Info,
+							[vim.diagnostic.severity.ERROR] = diagIcons.Error,
+							[vim.diagnostic.severity.WARN] = diagIcons.Warn,
+							[vim.diagnostic.severity.INFO] = diagIcons.Hint,
+							[vim.diagnostic.severity.HINT] = diagIcons.Info,
+						},
+						numhl = {
+							[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+							[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+							[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+							[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
 						},
 					},
 					virtual_text = {
