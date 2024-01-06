@@ -1,20 +1,17 @@
 return {
 	"stevearc/oil.nvim",
 	cmd = "Oil",
-	keys = { {
-		"<leader>e",
-		function()
-			require("oil").open(vim.fn.expand("%:h"))
-		end,
-		desc = "Oil",
-	} },
+	keys = { { "<leader>e", "<cmd>Oil<cr>", desc = "Oil" } },
 	config = function()
 		local oil, icons = require("oil"), require("utils.icons").kinds
 		local preview_wins, preview_bufs = {}, {} ---@type table<integer, integer>
-		local preview_max_fsize, preview_debounce = 1000000, 64 --ms
+		local preview_max_fsize = 1000000
+		local preview_debounce = 64 -- ms
 		local preview_request_last_timestamp = 0
 
 		---Change window-local directory to `dir`
+		---@param dir string
+		---@return nil
 		local function lcd(dir)
 			local ok = pcall(vim.cmd.lcd, dir)
 			if not ok then
@@ -23,6 +20,10 @@ return {
 		end
 
 		---Generate lines for preview window when preview is not available
+		---@param msg string
+		---@param height integer
+		---@param width integer
+		---@return string[]
 		local function nopreview(msg, height, width)
 			local lines = {}
 			local fillchar = vim.opt_local.fillchars:get().diff or "-"
@@ -51,6 +52,8 @@ return {
 
 		---End preview for oil window `win`
 		---Close preview window and delete preview buffer
+		---@param oil_win? integer oil window ID
+		---@return nil
 		local function end_preview(oil_win)
 			oil_win = oil_win or vim.api.nvim_get_current_win()
 			local preview_win = preview_wins[oil_win]
@@ -70,6 +73,7 @@ return {
 		end
 
 		---Preview file under cursor in a split
+		---@return nil
 		local function preview()
 			local entry = oil.get_cursor_entry()
 			local fname = entry and entry.name
@@ -93,7 +97,11 @@ return {
 			then
 				local oil_win_height = vim.api.nvim_win_get_height(oil_win)
 				local oil_win_width = vim.api.nvim_win_get_width(oil_win)
-				vim.cmd.new({ mods = { vertical = oil_win_width > 6 * oil_win_height } })
+				vim.cmd.new({
+					mods = {
+						vertical = oil_win_width > 6 * oil_win_height,
+					},
+				})
 				preview_win = vim.api.nvim_get_current_win()
 				preview_buf = vim.api.nvim_get_current_buf()
 				preview_wins[oil_win] = preview_win
@@ -109,7 +117,8 @@ return {
 				vim.opt_local.signcolumn = "no"
 				vim.opt_local.foldcolumn = "0"
 				vim.opt_local.winbar = ""
-				vim.opt_local.list = true
+				vim.opt_local.listchars:append({ tab = "  " })
+
 				vim.api.nvim_set_current_win(oil_win)
 			end
 			-- Set keymap for opening the file from preview buffer
@@ -210,7 +219,7 @@ return {
 			end,
 		})
 
-		---Toggle floating preview window
+		---Toggle preview window
 		---@return nil
 		local function toggle_preview()
 			local oil_win = vim.api.nvim_get_current_win()
@@ -223,6 +232,7 @@ return {
 		end
 
 		local preview_mapping = { mode = { "n", "x" }, desc = "Toggle preview", callback = toggle_preview }
+
 		local permission_hlgroups = setmetatable({
 			["-"] = "OilPermissionNone",
 			["r"] = "OilPermissionRead",
@@ -235,11 +245,11 @@ return {
 		})
 
 		local type_hlgroups = setmetatable({
-			["file"] = "OilTypeFile",
-			["directory"] = "OilTypeDir",
-			["fifo"] = "OilTypeFifo",
-			["link"] = "OilTypeLink",
-			["socket"] = "OilTypeSocket",
+			["-"] = "OilTypeFile",
+			["d"] = "OilTypeDir",
+			["p"] = "OilTypeFifo",
+			["l"] = "OilTypeLink",
+			["s"] = "OilTypeSocket",
 		}, {
 			__index = function()
 				return "OilTypeFile"
@@ -248,7 +258,19 @@ return {
 
 		oil.setup({
 			columns = {
-				default_file_explorer = true,
+				{
+					"type",
+					icons = {
+						directory = "d",
+						fifo = "p",
+						file = "-",
+						link = "l",
+						socket = "s",
+					},
+					highlight = function(type_str)
+						return type_hlgroups[type_str]
+					end,
+				},
 				{
 					"permissions",
 					highlight = function(permission_str)
@@ -260,15 +282,9 @@ return {
 						return hls
 					end,
 				},
-				{
-					"type",
-					icons = { directory = "directory", fifo = "fifo", file = "file", link = "link", socket = "socket" },
-					highlight = function(type_str)
-						return type_hlgroups[type_str]
-					end,
-				},
 				{ "size", highlight = "Special" },
 				{ "mtime", highlight = "Number" },
+
 				{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
 			},
 			win_options = {
@@ -278,8 +294,7 @@ return {
 				foldcolumn = "0",
 				statuscolumn = "",
 			},
-			lsp_rename_autosave = true,
-			cleanup_delay_ms = 0,
+			cleanup_delay_ms = false,
 			delete_to_trash = true,
 			skip_confirm_for_simple_edits = true,
 			prompt_save_on_select_new_entry = true,
@@ -292,11 +307,13 @@ return {
 			keymaps = {
 				["g?"] = "actions.show_help",
 				["K"] = preview_mapping,
+				["<C-k>"] = preview_mapping,
 				["-"] = "actions.parent",
 				["="] = "actions.select",
 				["+"] = "actions.select",
 				["<CR>"] = "actions.select",
 				["<C-h>"] = "actions.toggle_hidden",
+				["gh"] = "actions.toggle_hidden",
 				["gs"] = "actions.change_sort",
 				["gx"] = "actions.open_external",
 				["go"] = {
@@ -304,13 +321,17 @@ return {
 					buffer = true,
 					desc = "Choose an external program to open the entry under the cursor",
 					callback = function()
-						local entry, dir = oil.get_cursor_entry(), oil.get_current_dir()
+						local entry = oil.get_cursor_entry()
+						local dir = oil.get_current_dir()
 						if not entry or not dir then
 							return
 						end
 						local entry_path = vim.fs.joinpath(dir, entry.name)
 						local response
-						vim.ui.input({ prompt = "Open with: ", completion = "shellcmd" }, function(r)
+						vim.ui.input({
+							prompt = "Open with: ",
+							completion = "shellcmd",
+						}, function(r)
 							response = r
 						end)
 						if not response then
@@ -325,7 +346,8 @@ return {
 					buffer = true,
 					desc = "Yank the filepath of the entry under the cursor to a register",
 					callback = function()
-						local entry, dir = oil.get_cursor_entry(), oil.get_current_dir()
+						local entry = oil.get_cursor_entry()
+						local dir = oil.get_current_dir()
 						if not entry or not dir then
 							return
 						end
@@ -335,40 +357,41 @@ return {
 						vim.notify(string.format("[oil] yanked '%s' to register '%s'", entry_path, vim.v.register))
 					end,
 				},
-				["<C-o>"] = { -- Prevent jumping to file buffers by accident
-					mode = "n",
-					expr = true,
-					buffer = true,
-					desc = "Jump to older cursor position in oil buffer",
-					callback = function()
-						local jumplist = vim.fn.getjumplist()
-						local prevloc = jumplist[1][jumplist[2]]
-						return prevloc
-								and vim.api.nvim_buf_is_valid(prevloc.bufnr)
-								and vim.bo[prevloc.bufnr].ft == "oil"
-								and "<C-o>"
-							or "<Ignore>"
-					end,
-				},
-				["<C-i>"] = {
-					mode = "n",
-					expr = true,
-					buffer = true,
-					desc = "Jump to newer cursor position in oil buffer",
-					callback = function()
-						local jumplist = vim.fn.getjumplist()
-						local newloc = jumplist[1][jumplist[2] + 2]
-						return newloc
-								and vim.api.nvim_buf_is_valid(newloc.bufnr)
-								and vim.bo[newloc.bufnr].ft == "oil"
-								and "<C-i>"
-							or "<Ignore>"
-					end,
-				},
 			},
-			float = { border = vim.g.boder, win_options = { winblend = 0 } },
+			float = { border = vim.g.border, win_options = { winblend = 0 } },
 			preview = { border = vim.g.border, win_options = { winblend = 0 } },
-			progress = { border = vim.g.boder, win_options = { winblend = 0 } },
+			progress = { border = vim.g.border, win_options = { winblend = 0 } },
 		})
+
+		-- local groupid = vim.api.nvim_create_augroup("OilSyncCwd", {})
+		-- vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
+		-- 	desc = "Set cwd to follow directory shown in oil buffers.",
+		-- 	group = groupid,
+		-- 	pattern = "oil:///*",
+		-- 	callback = function(info)
+		-- 		if vim.bo[info.buf].filetype == "oil" then
+		-- 			local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
+		-- 			local oildir = vim.fs.normalize(oil.get_current_dir())
+		-- 			if cwd ~= oildir and vim.uv.fs_stat(oildir) then
+		-- 				lcd(oildir)
+		-- 			end
+		-- 		end
+		-- 	end,
+		-- })
+		-- vim.api.nvim_create_autocmd("DirChanged", {
+		-- 	desc = "Let oil buffers follow cwd.",
+		-- 	group = groupid,
+		-- 	callback = function(info)
+		-- 		if vim.bo[info.buf].filetype == "oil" then
+		-- 			vim.defer_fn(function()
+		-- 				local cwd = vim.fs.normalize(vim.fn.getcwd(vim.fn.winnr()))
+		-- 				local oildir = vim.fs.normalize(oil.get_current_dir() or "")
+		-- 				if cwd ~= oildir and vim.bo.ft == "oil" then
+		-- 					oil.open(cwd)
+		-- 				end
+		-- 			end, 100)
+		-- 		end
+		-- 	end,
+		-- })
 	end,
 }
