@@ -12,7 +12,7 @@ return {
 	verbose = false,
 	lsp_cfg = true,
 	lsp_gofumpt = false,
-	lsp_keymaps = true,
+	lsp_keymaps = false,
 	lsp_codelens = true,
 	lsp_document_formatting = true,
 	lsp_inlay_hints = { enable = false },
