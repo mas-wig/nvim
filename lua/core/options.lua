@@ -92,5 +92,12 @@ end
 
 vim.wo.colorcolumn = "80,120"
 
+vim.env.PATH = string.format(
+	"%s/mason/bin/%s%s",
+	vim.fn.stdpath("data"),
+	(vim.loop.os_uname().sysname == "Windows_NT" and ";" or ":"),
+	vim.env.PATH
+)
+
 vim.g.border = "single"
 vim.g.markdown_recommended_style = 0
