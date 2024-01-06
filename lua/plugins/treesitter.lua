@@ -1,4 +1,6 @@
 return {
+	{ "windwp/nvim-ts-autotag", config = true, ft = { "html", "javascriptreact", "typescriptreact", "templ" } },
+	{ "nvim-treesitter/nvim-treesitter-textobjects", event = "BufRead" },
 	{
 		"nvim-treesitter/nvim-treesitter",
 		version = false,
@@ -75,10 +77,22 @@ return {
 				},
 				move = {
 					enable = true,
-					goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-					goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
-					goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
-					goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
+					goto_next_start = {
+						["]f"] = { query = "@function.outer", desc = "Next Start Func" },
+						["]c"] = { query = "@class.outer", desc = "Next Start Class" },
+					},
+					goto_next_end = {
+						["]F"] = { query = "@function.outer", desc = "Next End Func" },
+						["]C"] = { query = "@class.outer", desc = "Next End Class" },
+					},
+					goto_previous_start = {
+						["[f"] = { query = "@function.outer", desc = "Prev Start Func" },
+						["[c"] = { query = "@class.outer", desc = "Prev Start Class" },
+					},
+					goto_previous_end = {
+						["[F"] = { query = "@function.outer", desc = "Prev End Func" },
+						["[C"] = { query = "@class.outer", desc = "Prev End Class" },
+					},
 				},
 			},
 		},
@@ -194,7 +208,24 @@ return {
 			require("nvim-treesitter.configs").setup(opts)
 		end,
 	},
-	{ "nvim-treesitter/nvim-treesitter-context", event = "BufRead", opts = { mode = "cursor", max_lines = 3 } },
-	{ "windwp/nvim-ts-autotag", config = true, ft = { "html", "javascriptreact", "typescriptreact", "templ" } },
-	{ "nvim-treesitter/nvim-treesitter-textobjects", event = "BufRead" },
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = "BufRead",
+		opts = { mode = "cursor", max_lines = 3 },
+		keys = {
+			{
+				"<leader>ut",
+				function()
+					local u, tsc = require("lazy.core.util"), require("treesitter-context")
+					tsc.toggle()
+					if require("utils.toggle").get_upvalue_ctx(tsc.toggle, "enabled") then
+						u.info("Enabled Treesitter Context", { title = "Option" })
+					else
+						u.warn("Disabled Treesitter Context", { title = "Option" })
+					end
+				end,
+				desc = "Toggle Treesitter Context",
+			},
+		},
+	},
 }
