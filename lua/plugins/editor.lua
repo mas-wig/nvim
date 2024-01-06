@@ -251,17 +251,17 @@ return {
 			local harpoon = require("harpoon")
 			return {
                 -- stylua: ignore start
-				{ "<leader>ma", function() vim.notify("Add to Mark",2) harpoon:list():append() end, desc = "Add to Mark" },
-				{ "<leader>mm", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon Toggle" },
-				{ "<leader>m1", function() harpoon:list():select(1) end, desc = "Goto Mark 1" },
-				{ "<leader>m2", function() harpoon:list():select(2) end, desc = "Goto Mark 2" },
-				{ "<leader>m3", function() harpoon:list():select(3) end, desc = "Goto Mark 3" },
-				{ "<leader>m4", function() harpoon:list():select(4) end, desc = "Goto Mark 4" },
-                { "<leader>m5", function() harpoon:list():select(5) end, desc = "Goto Mark 6" },
-                { "<leader>m6", function() harpoon:list():select(6) end, desc = "Goto Mark 6" },
-                { "<leader>m7", function() harpoon:list():select(7) end, desc = "Goto Mark 7" },
-                { "<leader>m8", function() harpoon:list():select(8) end, desc = "Goto Mark 8" },
-                { "<leader>m9", function() harpoon:list():select(9) end, desc = "Goto Mark 9" },
+				{ "<A-a>", function() vim.notify("Add to Mark",2) harpoon:list():append() end, desc = "Add to Mark" },
+				{ "<A-space>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon Toggle" },
+				{ "<A-1>", function() harpoon:list():select(1) end, desc = "Goto Mark 1" },
+				{ "<A-2>", function() harpoon:list():select(2) end, desc = "Goto Mark 2" },
+				{ "<A-3>", function() harpoon:list():select(3) end, desc = "Goto Mark 3" },
+				{ "<A-4>", function() harpoon:list():select(4) end, desc = "Goto Mark 4" },
+                { "<A-5>", function() harpoon:list():select(5) end, desc = "Goto Mark 6" },
+                { "<A-6>", function() harpoon:list():select(6) end, desc = "Goto Mark 6" },
+                { "<A-7>", function() harpoon:list():select(7) end, desc = "Goto Mark 7" },
+                { "<A-8>", function() harpoon:list():select(8) end, desc = "Goto Mark 8" },
+                { "<A-9>", function() harpoon:list():select(9) end, desc = "Goto Mark 9" },
 				-- stylua: ignore start
 			}
 		end,
