@@ -1,3 +1,7 @@
+-- stylua: ignore start
+local fzf_opts = { ["--no-scrollbar"] = "", ["--color"] = "separator:cyan", ["--info"] = "right", ["--marker"] = "󰍎 ", ["--pointer"] = " ", ["--padding"] = "0,1", ["--margin"] = "0", }
+-- stylua: ignore end
+
 return {
 	"ibhagwan/fzf-lua",
 	init = function()
@@ -11,7 +15,7 @@ return {
 				elseif h > max_h then
 					h = max_h
 				end
-				return { winopts = { height = h, width = 0.50, row = 0.40 } }
+				return { winopts = { height = h, width = 0.55, row = 0.45 }, fzf_opts = fzf_opts }
 			end)
 			return vim.ui.select(...)
 		end
@@ -85,15 +89,6 @@ return {
 			"__generated__",
 		}, ",")
 
-		local fzf_opts = {
-			["--no-scrollbar"] = "",
-			["--color"] = "separator:cyan",
-			["--info"] = "right",
-			["--marker"] = "󰍎 ",
-			["--pointer"] = " ",
-			["--padding"] = "0,1",
-			["--margin"] = "0",
-		}
 		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
 
 		return require("fzf-lua").setup({
@@ -215,7 +210,7 @@ return {
 				code_actions = {
 					prompt = " Code Action : ",
 					fzf_opts = { ["--color"] = "separator:cyan", ["--info"] = "right" },
-					winopts = { height = 0.3, width = 0.6, preview = { hidden = "hidden" } },
+					winopts = { height = 0.3, width = 0.55, row = 0.45, preview = { hidden = "hidden" } },
 				},
 				finder = { prompt = " Lsp Finder : ", fzf_opts = fzf_opts },
 				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds },

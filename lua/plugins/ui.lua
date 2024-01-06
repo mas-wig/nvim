@@ -149,8 +149,16 @@ return {
 		"folke/which-key.nvim",
 		event = "BufRead",
 		config = function()
+			vim.o.timeout = true
+			vim.o.timeoutlen = 300
 			local wk = require("which-key")
 			wk.setup({
+				layout = {
+					height = { min = 4, max = 25 },
+					width = { min = 20, max = 50 },
+					spacing = 3,
+					align = "left",
+				},
 				plugins = { marks = false, register = false },
 				icons = {
 					breadcrumb = "  ",
@@ -176,7 +184,7 @@ return {
 				["<leader>hf"] = { name = "  Git Search" },
 				["<leader>ds"] = { name = "  Dap Find" },
 				["<leader>s"] = { name = "  Search" },
-				["<leader>m"] = { name = "󱪾  Marks" },
+				["<A-space>"] = { name = "󱪾  Marks" },
 				["<leader>w"] = { name = "  Windows" },
 				["<leader>g"] = { name = "  Lsp" },
 				["<leader>b"] = { name = "  Buffers" },

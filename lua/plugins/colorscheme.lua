@@ -12,6 +12,7 @@ local function hl_override(hl, c, util)
 	hl.WinSeparator = { link = "Comment" }
 	hl.LineNr = { fg = c.purple, bg = c.none, bold = true }
 	hl.CursorLineNr = { fg = c.cyan, bg = c.none, bold = true }
+	hl.FloatBorder = { link = "Comment" }
 
 	-- Telescope
 	hl.TelescopePreviewTitle = { fg = c.black, bg = c.yellow, bold = true }
