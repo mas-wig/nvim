@@ -170,8 +170,7 @@ return {
 						name = "nvim_lsp",
 						max_item_count = 20,
 						entry_filter = function(entry, ctx)
-							local item = entry:get_completion_item()
-							local ft = ctx.filetype
+							local item, ft = entry:get_completion_item(), ctx.filetype
 							local boilerplate_method =
 								contains_any(item.label, { "ReadField", "FastRead", "WriteField", "FastWrite" })
 							if ft == "go" and boilerplate_method then
