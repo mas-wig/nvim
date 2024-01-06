@@ -89,13 +89,12 @@ return {
 			["--no-scrollbar"] = "",
 			["--color"] = "separator:cyan",
 			["--info"] = "right",
-			["--marker"] = "+",
-			["--pointer"] = "→",
+			["--marker"] = "󰍎 ",
+			["--pointer"] = " ",
 			["--padding"] = "0,1",
 			["--margin"] = "0",
 		}
 		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
-		local no_preview_fzfopts = { ["--color"] = "separator:cyan", ["--info"] = "right" }
 
 		return require("fzf-lua").setup({
 			winopts = {
@@ -197,16 +196,16 @@ return {
 			args = { prompt = " Args : ", git_icons = false, fzf_opts = fzf_opts },
 			oldfiles = { prompt = " Old Files : ", git_icons = false, fzf_opts = fzf_opts },
 			buffers = { prompt = " Buffers : ", git_icons = false, fzf_opts = fzf_opts },
-			tabs = { winopts = no_preview_winopts, prompt = " Tabs : ", fzf_opts = no_preview_fzfopts },
-			lines = { winopts = no_preview_winopts, prompt = " Lines : ", fzf_opts = no_preview_fzfopts },
-			blines = { winopts = no_preview_winopts, prompt = " Buffer Lines : ", fzf_opts = no_preview_fzfopts },
-			keymaps = { winopts = no_preview_winopts, prompt = " Keymaps : ", fzf_opts = no_preview_fzfopts },
-			quickfix = { winopts = no_preview_winopts, prompt = " Quick Fix : ", fzf_opts = no_preview_fzfopts },
+			tabs = { winopts = no_preview_winopts, prompt = " Tabs : ", fzf_opts = fzf_opts },
+			lines = { winopts = no_preview_winopts, prompt = " Lines : ", fzf_opts = fzf_opts },
+			blines = { winopts = no_preview_winopts, prompt = " Buffer Lines : ", fzf_opts = fzf_opts },
+			keymaps = { winopts = no_preview_winopts, prompt = " Keymaps : ", fzf_opts = fzf_opts },
+			quickfix = { winopts = no_preview_winopts, prompt = " Quick Fix : ", fzf_opts = fzf_opts },
 			quickfix_stack = { prompt = " Quick Fix Stack : ", fzf_opts = fzf_opts },
 			diagnostics = {
 				winopts = no_preview_winopts,
 				prompt = " Diagnostics : ",
-				fzf_opts = no_preview_fzfopts,
+				fzf_opts = fzf_opts,
 				signs = {
 					["Error"] = { text = icons.diagnostics.Error, texthl = "DiagnosticError" },
 					["Warn"] = { text = icons.diagnostics.Warn, texthl = "DiagnosticWarn" },
