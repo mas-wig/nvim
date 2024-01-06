@@ -70,6 +70,45 @@ return {
 				return config
 			end
 
+			local function soft_stop_client(client, force, num_trials)
+				if
+					client.is_stopped() ---@diagnostic disable-line: invisible
+					or not vim.tbl_isempty(vim.lsp.get_buffers_by_client_id(client.id))
+				then
+					return
+				end
+				num_trials = num_trials or 3 --max num by default its 4
+				if force or num_trials <= 0 then
+					vim.notify("[LSP] force stopping detached client " .. client.name)
+					client.stop(true)
+					return
+				end
+				client.stop()
+				vim.defer_fn(function()
+					soft_stop_client(client, force, num_trials - 1)
+				end, 500)
+			end
+
+			local lsp_autostop_pending
+			vim.api.nvim_create_autocmd("BufDelete", {
+				group = vim.api.nvim_create_augroup("LspAutoStop", {}),
+				desc = "Automatically stop idle language servers.",
+				callback = function()
+					if lsp_autostop_pending then
+						return
+					end
+					lsp_autostop_pending = true
+					vim.defer_fn(function()
+						lsp_autostop_pending = nil
+						for _, client in ipairs(vim.lsp.get_clients()) do
+							if vim.tbl_isempty(vim.lsp.get_buffers_by_client_id(client.id)) then
+								soft_stop_client(client)
+							end
+						end
+					end, 60000)
+				end,
+			})
+
 			vim.schedule(function()
 				local lspconfig, methods = require("lspconfig"), vim.lsp.protocol.Methods
 				require("lspconfig.ui.windows").default_options.border = "single"
@@ -84,9 +123,8 @@ return {
 					end,
 				})
 
-				local lang_servers = { lua = { "lua_ls" }, c = { "clangd" }, cpp = { "clangd" } }
+				local lang_servers, ft_servers = { lua = { "lua_ls" }, c = { "clangd" }, cpp = { "clangd" } }, {}
 
-				local ft_servers = {}
 				for langs, sname in pairs(lang_servers) do
 					ft_servers[langs] = sname
 				end

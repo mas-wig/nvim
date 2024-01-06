@@ -3,7 +3,7 @@ return {
 
 	{
 		"chrisgrieser/nvim-early-retirement",
-		event = "BufRead",
+		event = "VeryLazy",
 		opts = { retirementAgeMins = 5, notificationOnAutoClose = true },
 	},
 

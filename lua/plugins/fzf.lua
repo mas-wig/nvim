@@ -97,6 +97,23 @@ return {
 		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
 
 		return require("fzf-lua").setup({
+			previewers = {
+				cat = { cmd = "cat", args = "--number" },
+				bat = { cmd = "bat", args = "--style=numbers,changes --color always", theme = "base16", config = nil },
+				head = { cmd = "head", args = nil },
+				git_diff = {
+					cmd_deleted = "git diff --color HEAD --",
+					cmd_modified = "git diff --color HEAD",
+					cmd_untracked = "git diff --color --no-index /dev/null",
+				},
+				man = { cmd = "man -c %s | col -bx" },
+				builtin = {
+					syntax = true,
+					syntax_limit_l = 0,
+					syntax_limit_b = 1024 * 1024,
+					extensions = { ["png"] = { "viu" }, ["jpg"] = { "viu" } },
+				},
+			},
 			winopts = {
 				height = 0.75,
 				width = 0.90,
@@ -122,8 +139,18 @@ return {
 
 			grep = {
 				prompt = " Search : ",
+				input_prompt = " Grep For : ",
+				glob_flag = "--iglob",
 				fzf_opts = fzf_opts,
 				git_icons = false,
+				grep_opts = table.concat({
+					"--binary-files=without-match",
+					"--line-number",
+					"--recursive",
+					"--color=auto",
+					"--perl-regexp",
+					"-e",
+				}, " "),
 				rg_opts = table.concat({
 					"--hidden",
 					"--follow",
@@ -214,10 +241,42 @@ return {
 				},
 			},
 			git = {
-				branches = { prompt = " Git Branches : ", fzf_opts = fzf_opts },
-				bcommits = { prompt = " Git Buffer Commit : ", fzf_opts = fzf_opts },
-				status = { prompt = " Git Status : ", fzf_opts = fzf_opts },
-				files = { prompt = " Git Files : ", fzf_opts = fzf_opts, git_icons = false },
+				branches = {
+					prompt = " Git Branches : ",
+					fzf_opts = fzf_opts,
+					cmd = "git branch --all --color",
+					preview = "git log --graph --pretty=oneline --abbrev-commit --color {1}",
+				},
+				bcommits = {
+					prompt = " Git Buffer Commit : ",
+					fzf_opts = fzf_opts,
+					cmd = "git log --pretty=oneline --abbrev-commit --color",
+					preview = "git show --pretty='%Cred%H%n%Cblue%an%n%Cgreen%s' --color {1}",
+				},
+				commits = {
+					prompt = "Commits❯ ",
+					cmd = "git log --pretty=oneline --abbrev-commit --color",
+					preview = "git show --pretty='%Cred%H%n%Cblue%an%n%Cgreen%s' --color {1}",
+					fzf_opts = fzf_opts,
+				},
+				status = {
+					prompt = " Git Status : ",
+					fzf_opts = fzf_opts,
+					cmd = "git status -su",
+					previewer = "git_diff",
+					file_icons = true,
+					git_icons = true,
+					color_icons = true,
+				},
+				files = {
+					prompt = " Git Files : ",
+					fzf_opts = fzf_opts,
+					cmd = "git ls-files --exclude-standard",
+					multiprocess = true,
+					git_icons = false,
+					file_icons = true,
+					color_icons = true,
+				},
 			},
 
 			fzf_colors = {
@@ -234,6 +293,7 @@ return {
 				["pointer"] = { "fg", "TelescopeSelectionCaret" },
 				["marker"] = { "fg", "GitSignsChange" },
 			},
+			file_icon_padding = " ",
 		})
 	end,
 }
