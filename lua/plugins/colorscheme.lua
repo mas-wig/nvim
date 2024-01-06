@@ -3,9 +3,9 @@ local function hl_override(hl, c, util)
 	hl.VisualNOS = { bg = c.bg_visual, bold = true }
 	hl.WinBar = { bg = c.bg_statusline, underline = true, sp = util.darken(c.blue1, 0.8) }
 	hl.CmpItemAbbr = { fg = "#ffffff", bg = c.none }
-	hl.CmpItemAbbrMatch = { fg = c.yellow, bg = c.none }
-	hl.CmpItemAbbrMatchFuzzy = { fg = c.cyan, bg = c.none }
-	hl.PmenuSel = { bg = util.darken(c.purple, 0.65), bold = true }
+	hl.CmpItemAbbrMatch = { fg = c.cyan1, bg = c.none }
+	hl.CmpItemAbbrMatchFuzzy = { fg = c.magenta2, bg = c.none }
+	hl.PmenuSel = { bg = util.darken(c.purple, 0.4), bold = true }
 	hl.WinBarNC = { bg = c.bg_statusline, underline = true, sp = util.darken(c.blue1, 0.8) }
 	hl.StatusLine = { fg = c.fg_sidebar, bg = c.bg_statusline }
 	hl.TreesitterContext = { underline = true, sp = util.darken(c.purple, 0.8) }
@@ -17,7 +17,6 @@ local function hl_override(hl, c, util)
 	hl.TelescopePreviewTitle = { fg = c.black, bg = c.yellow, bold = true }
 	hl.TelescopePromptTitle = { fg = c.black, bg = c.blue1, bold = true }
 	hl.TelescopeBorder = { link = "Comment" }
-
 	-- Gitsign
 	hl.GitSignsAdd = { fg = c.green1, bg = c.none }
 	hl.GitSignsChange = { fg = c.yellow, bg = c.none }
@@ -73,16 +72,14 @@ local function hl_override(hl, c, util)
 	hl.OilCreate = { link = "DiagnosticSignInfo" }
 	hl.OilDelete = { link = "DiagnosticSignError" }
 	hl.OilChange = { link = "DiagnosticSignWarn" }
-	hl.OilPermissionRead = { fg = c.blue1, bold = true }
+	hl.OilPermissionRead = { fg = c.cyan1, bold = true }
 	hl.OilPermissionNone = { link = "NonText" }
-	hl.OilPermissionWrite = { fg = c.green, bold = true }
-	hl.OilPermissionExecute = { fg = c.orange, bold = true }
+	hl.OilPermissionWrite = { fg = c.green2, bold = true }
+	hl.OilPermissionExecute = { fg = c.yellow1, bold = true }
 	hl.OilTypeDir = { link = "Directory" }
 	hl.OilTypeFifo = { link = "Special" }
 	hl.OilTypeFile = { link = "NonText" }
 	hl.OilTypeLink = { link = "Constant" }
-	hl.OilTypeSocket = { link = "OilSocket" }
-
 	hl.FzfLuaBorder = { link = "Comment" }
 end
 
@@ -98,6 +95,12 @@ return {
 			sidebars = { "toggleterm", "qf", "oil", "help", "terminal", "neotest-summary", "dashboard" },
 			on_highlights = function(hl, c)
 				return hl_override(hl, c, require("tokyonight.util"))
+			end,
+			on_colors = function(c)
+				c.green2 = "#2bff05"
+				c.yellow1 = "#faf032"
+				c.cyan1 = "#00ffee"
+				c.purple1 = "#f242f5"
 			end,
 		})
 		vim.cmd.colorscheme("tokyonight-night")

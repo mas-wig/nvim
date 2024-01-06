@@ -97,11 +97,7 @@ return {
 			then
 				local oil_win_height = vim.api.nvim_win_get_height(oil_win)
 				local oil_win_width = vim.api.nvim_win_get_width(oil_win)
-				vim.cmd.new({
-					mods = {
-						vertical = oil_win_width > 6 * oil_win_height,
-					},
-				})
+				vim.cmd.new({ mods = { vertical = oil_win_width > 6 * oil_win_height } })
 				preview_win = vim.api.nvim_get_current_win()
 				preview_buf = vim.api.nvim_get_current_buf()
 				preview_wins[oil_win] = preview_win
@@ -118,7 +114,6 @@ return {
 				vim.opt_local.foldcolumn = "0"
 				vim.opt_local.winbar = ""
 				vim.opt_local.listchars:append({ tab = "  " })
-
 				vim.api.nvim_set_current_win(oil_win)
 			end
 			-- Set keymap for opening the file from preview buffer
@@ -245,11 +240,11 @@ return {
 		})
 
 		local type_hlgroups = setmetatable({
-			["-"] = "OilTypeFile",
-			["d"] = "OilTypeDir",
-			["p"] = "OilTypeFifo",
-			["l"] = "OilTypeLink",
-			["s"] = "OilTypeSocket",
+			["file"] = "OilTypeFile",
+			["directory"] = "OilTypeDir",
+			["fifo"] = "OilTypeFifo",
+			["link"] = "OilTypeLink",
+			["socket"] = "OilTypeSocket",
 		}, {
 			__index = function()
 				return "OilTypeFile"
@@ -258,19 +253,6 @@ return {
 
 		oil.setup({
 			columns = {
-				{
-					"type",
-					icons = {
-						directory = "d",
-						fifo = "p",
-						file = "-",
-						link = "l",
-						socket = "s",
-					},
-					highlight = function(type_str)
-						return type_hlgroups[type_str]
-					end,
-				},
 				{
 					"permissions",
 					highlight = function(permission_str)
@@ -282,9 +264,15 @@ return {
 						return hls
 					end,
 				},
+				{
+					"type",
+					icons = { directory = "directory", fifo = "fifo", file = "file", link = "link", socket = "socket" },
+					highlight = function(type_str)
+						return type_hlgroups[type_str]
+					end,
+				},
 				{ "size", highlight = "Special" },
 				{ "mtime", highlight = "Number" },
-
 				{ "icon", default_file = icons.File, directory = icons.Folder, add_padding = false },
 			},
 			win_options = {
