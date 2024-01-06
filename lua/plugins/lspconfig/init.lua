@@ -19,6 +19,7 @@ return {
 		cmd = "Mason",
 		build = ":MasonUpdate",
 		opts = {
+			PATH = "prepend",
 			ensure_installed = {
 				"clangd",
 				"stylua",
