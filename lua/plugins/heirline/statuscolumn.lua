@@ -3,8 +3,25 @@ local conditions = require("heirline.conditions")
 return {
 	condition = function()
 		return not conditions.buffer_matches({
-			buftype = { "nofile", "prompt", "help", "quickfix", "terminal", "term" },
-			filetype = { "alpha", "harpoon", "oil", "lspinfo", "toggleterm", "dashboard", "qf", "dbui", "dbout" },
+			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
+			filetype = {
+				"^alpha$",
+				"^harpoon$",
+				"^dashboard$",
+				"^DressingInput$",
+				"^lazy$",
+				"^Glance$",
+				"^lazyterm$",
+				"^netrw$",
+				"^TelescopePrompt$",
+				"^neo--tree$",
+				"^neotest--summary$",
+				"^neo--tree--popup$",
+				"^toggleterm$",
+				"^dbui$",
+				"^dbout$",
+				"^oil$",
+			},
 		})
 	end,
 	static = {

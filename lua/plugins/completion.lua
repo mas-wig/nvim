@@ -1,7 +1,7 @@
 return {
 	{ "hrsh7th/cmp-nvim-lsp", event = "LspAttach" },
 	{ "saadparwaiz1/cmp_luasnip", event = "InsertEnter" },
-	{ "FelipeLema/cmp-async-path", event = { "CmdlineEnter", "InsertEnter" } },
+	{ "FelipeLema/cmp-async-path", event = { "InsertEnter" } },
 	{ "lukas-reineke/cmp-rg", event = "InsertEnter" },
 	{ "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
 	{ "rafamadriz/friendly-snippets", event = "InsertEnter" },

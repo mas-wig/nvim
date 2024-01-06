@@ -219,6 +219,21 @@ return {
 				status = { prompt = " Git Status : ", fzf_opts = fzf_opts },
 				files = { prompt = " Git Files : ", fzf_opts = fzf_opts, git_icons = false },
 			},
+
+			fzf_colors = {
+				["fg"] = { "fg", "TelescopeNormal" },
+				["bg"] = { "bg", "Normal" },
+				["hl"] = { "fg", "NeoTreeTabActive" },
+				["fg+"] = { "fg", "TelescopeSelection" },
+				["bg+"] = { "bg", "PmenuSel" },
+				["hl+"] = { "fg", "TelescopeMatching" },
+				["info"] = { "fg", "TelescopeCounter" },
+				["border"] = { "fg", "Comment" },
+				["gutter"] = { "bg", "TelescopeNormal" },
+				["prompt"] = { "fg", "TelescopePrefix" },
+				["pointer"] = { "fg", "TelescopeSelectionCaret" },
+				["marker"] = { "fg", "GitSignsChange" },
+			},
 		})
 	end,
 }
