@@ -178,6 +178,7 @@ return {
 				["<leader>s"] = { name = "  Search" },
 				["<leader>m"] = { name = "󱪾  Marks" },
 				["<leader>w"] = { name = "  Windows" },
+				["<leader>g"] = { name = "  Lsp" },
 				["<leader>b"] = { name = "  Buffers" },
 			})
 		end,
