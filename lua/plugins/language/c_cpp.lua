@@ -1,4 +1,4 @@
-return {
+return require("clangd_extensions").setup({
 	inlay_hints = {
 		inline = false,
 	},
@@ -21,4 +21,4 @@ return {
 			TemplateParamObject = " ",
 		},
 	},
-}
+})

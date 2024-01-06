@@ -19,7 +19,14 @@ return {
 		cmd = "Mason",
 		build = ":MasonUpdate",
 		opts = {
-			ensure_installed = { "stylua", "lua-language-server", "rust-analyzer", "codelldb" },
+			ensure_installed = {
+				"clangd",
+				"stylua",
+				"lua-language-server",
+				"rust-analyzer",
+				"codelldb",
+				"typescript-language-server",
+			},
 		},
 		config = function(_, opts)
 			require("mason").setup(opts)
@@ -63,8 +70,7 @@ return {
 			end
 
 			vim.schedule(function()
-				local methods = vim.lsp.protocol.Methods
-				local lspconfig, manager = require("lspconfig"), require("lspconfig.manager")
+				local lspconfig, methods = require("lspconfig"), vim.lsp.protocol.Methods
 				require("lspconfig.ui.windows").default_options.border = "single"
 				vim.api.nvim_create_autocmd("VimResized", {
 					desc = "Reload LspInfo floating window on VimResized.",
@@ -77,21 +83,13 @@ return {
 					end,
 				})
 
-				local _start_new_client = manager._start_new_client
-				function manager:_start_new_client(_, new_config, ...)
-					local bin = new_config and new_config.cmd and new_config.cmd[1]
-					if bin and vim.fn.executable(bin) == 0 then
-						return
-					end
-					return _start_new_client(self, _, new_config, ...)
-				end
-
-				local lang_servers = { lua = { "lua_ls" } }
+				local lang_servers = { lua = { "lua_ls" }, c = { "clangd" }, cpp = { "clangd" } }
 
 				local ft_servers = {}
 				for langs, sname in pairs(lang_servers) do
 					ft_servers[langs] = sname
 				end
+
 				local function setup_ft(ft)
 					local servers = ft_servers[ft]
 					if not servers then

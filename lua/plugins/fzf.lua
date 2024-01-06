@@ -152,7 +152,7 @@ return {
 				cwd_header = false,
 				cwd_prompt = false,
 				toggle_ignore_flag = "--no-ignore",
-				path_shorten = true,
+				path_shorten = false,
 				find_opts = table.concat(
 					{ "-type", "f", "-type", "d", "-type", "l", "-not", "-path", "'*/.git/*'", "-printf", "'%P\n'" },
 					" "
