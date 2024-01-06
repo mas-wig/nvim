@@ -2,7 +2,7 @@ local function hl_override(hl, c, util)
 	hl.Visual = { bg = c.bg_visual, bold = true }
 	hl.VisualNOS = { bg = c.bg_visual, bold = true }
 	hl.WinBar = { bg = c.bg_statusline, underline = true, sp = util.darken(c.blue1, 0.8) }
-	hl.CmpItemAbbr = { fg = c.white, bg = c.none }
+	hl.CmpItemAbbr = { fg = "#ffffff", bg = c.none }
 	hl.CmpItemAbbrMatch = { fg = c.yellow, bg = c.none }
 	hl.CmpItemAbbrMatchFuzzy = { fg = c.cyan, bg = c.none }
 	hl.PmenuSel = { bg = util.darken(c.purple, 0.65), bold = true }
