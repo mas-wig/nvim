@@ -55,8 +55,8 @@ return {
 			{ "<leader>hfS", fzf.git_stash, desc = "`git stash`" },
 
 			-- Grep
-			{ "<leader>sW", fzf.grep, desc = "Grep Pattern with `grep` or `rg`" },
-			{ "<leader>sL", fzf.grep_last, desc = "Run Last Grep" },
+			{ "<leader>ss", fzf.grep, desc = "Grep Pattern with `grep` or `rg`" },
+			{ "<leader>sS", fzf.grep_last, desc = "Run Last Grep" },
 			{ "<leader>sB", fzf.grep_curbuf, desc = "Grep Current Buffer" },
 			{ "<leader>sb", fzf.lgrep_curbuf, desc = "Live Grep current buffer" },
 			{ "<leader>sw", fzf.live_grep, desc = "Live Grep Current Project" },
@@ -148,6 +148,7 @@ return {
 				prompt = " Search : ",
 				input_prompt = " Grep For : ",
 				glob_flag = "--iglob",
+				glob_separator = "%s%-%-",
 				fzf_opts = fzf_opts,
 				git_icons = false,
 				grep_opts = table.concat({
