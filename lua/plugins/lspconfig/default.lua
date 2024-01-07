@@ -184,48 +184,9 @@ return {
 		map({ "n", "x" }, "[h", count_wrap(goto_diag("prev", "HINT")), { desc = "Prev Hint", buffer = bufnr })
 		map({ "n", "x" }, "]h", count_wrap(goto_diag("next", "HINT")), { desc = "Next Hint", buffer = bufnr })
 	end,
-	capabilities = vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_capabilities(), {
-		textDocument = {
-			competion = {
-				dynamicRegistration = false,
-				completionItem = {
-					snippetSupport = true,
-					commitCharactersSupport = true,
-					deprecatedSupport = true,
-					preselectSupport = true,
-					tagSupport = {
-						valueSet = {
-							1, -- Deprecated
-						},
-					},
-					insertReplaceSupport = true,
-					resolveSupport = {
-						properties = {
-							"documentation",
-							"detail",
-							"additionalTextEdits",
-						},
-					},
-					insertTextModeSupport = {
-						valueSet = {
-							1, -- asIs
-							2, -- adjustIndentation
-						},
-					},
-					labelDetailsSupport = true,
-				},
-				contextSupport = true,
-				insertTextMode = 1,
-				completionList = {
-					itemDefaults = {
-						"commitCharacters",
-						"editRange",
-						"insertTextFormat",
-						"insertTextMode",
-						"data",
-					},
-				},
-			},
-		},
-	}),
+	capabilities = vim.tbl_deep_extend(
+		"force",
+		vim.lsp.protocol.make_client_capabilities(),
+		require("cmp_nvim_lsp").default_capabilities()
+	),
 }
