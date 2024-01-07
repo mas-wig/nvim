@@ -254,17 +254,17 @@ return {
 			local harpoon = require("harpoon")
 			return {
                 -- stylua: ignore start
-				{ "<leader>a", function() vim.notify("Add to Mark",2) harpoon:list():append() end, desc = "Add to Mark" },
+				{ "<A-a>", function() vim.notify("Add to Mark",2) harpoon:list():append() end, desc = "Add to Mark" },
 				{ "<A-space>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon Toggle" },
-				{ "<leader>1", function() harpoon:list():select(1) end, desc = "Goto Mark 1" },
-				{ "<leader>2", function() harpoon:list():select(2) end, desc = "Goto Mark 2" },
-				{ "<leader>3", function() harpoon:list():select(3) end, desc = "Goto Mark 3" },
-				{ "<leader>4", function() harpoon:list():select(4) end, desc = "Goto Mark 4" },
-                { "<leader>5", function() harpoon:list():select(5) end, desc = "Goto Mark 6" },
-                { "<leader>6", function() harpoon:list():select(6) end, desc = "Goto Mark 6" },
-                { "<leader>7", function() harpoon:list():select(7) end, desc = "Goto Mark 7" },
-                { "<leader>8", function() harpoon:list():select(8) end, desc = "Goto Mark 8" },
-                { "<leader>9", function() harpoon:list():select(9) end, desc = "Goto Mark 9" },
+				{ "<A-1>", function() harpoon:list():select(1) end, desc = "Goto Mark 1" },
+				{ "<A-2>", function() harpoon:list():select(2) end, desc = "Goto Mark 2" },
+				{ "<A-3>", function() harpoon:list():select(3) end, desc = "Goto Mark 3" },
+				{ "<A-4>", function() harpoon:list():select(4) end, desc = "Goto Mark 4" },
+                { "<A-5>", function() harpoon:list():select(5) end, desc = "Goto Mark 6" },
+                { "<A-6>", function() harpoon:list():select(6) end, desc = "Goto Mark 6" },
+                { "<A-7>", function() harpoon:list():select(7) end, desc = "Goto Mark 7" },
+                { "<A-8>", function() harpoon:list():select(8) end, desc = "Goto Mark 8" },
+                { "<A-9>", function() harpoon:list():select(9) end, desc = "Goto Mark 9" },
 				-- stylua: ignore start
 			}
 		end,

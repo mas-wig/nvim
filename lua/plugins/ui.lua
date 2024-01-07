@@ -156,7 +156,7 @@ return {
 				layout = {
 					height = { min = 4, max = 15 },
 					width = { min = 20, max = 50 },
-					spacing = 2,
+					spacing = 4,
 					align = "left",
 				},
 				plugins = { marks = false, register = false },
