@@ -72,7 +72,7 @@ return {
 		}
 	end,
 	config = function()
-		local fmt, icons = string.format, require("utils.icons")
+		local fmt, icons, fzf = string.format, require("utils.icons"), require("fzf-lua")
 
 		local ignore_folder = table.concat({
 			"node_modules",
@@ -91,7 +91,18 @@ return {
 
 		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
 
-		return require("fzf-lua").setup({
+		return fzf.setup({
+			actions = {
+				files = {
+					["default"] = fzf.actions.file_edit_or_qf,
+					["ctrl-l"] = fzf.actions.arg_add,
+					["ctrl-s"] = fzf.actions.file_split,
+					["ctrl-v"] = fzf.actions.file_vsplit,
+					["ctrl-t"] = fzf.actions.file_tabedit,
+					["ctrl-q"] = fzf.actions.file_sel_to_qf,
+					["alt-q"] = fzf.actions.file_sel_to_ll,
+				},
+			},
 			previewers = {
 				cat = { cmd = "cat", args = "--number" },
 				bat = { cmd = "bat", args = "--style=numbers,changes --color always", theme = "base16", config = nil },
