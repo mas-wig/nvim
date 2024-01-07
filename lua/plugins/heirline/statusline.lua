@@ -263,6 +263,13 @@ return {
 		},
 		space,
 		{
+			provider = function()
+				return fmt(" %s ", vim.bo.filetype)
+			end,
+			hl = { bold = true, fg = colors.blue2, bg = colors.fg_gutter },
+		},
+		space,
+		{
 			provider = " %l:%c:%L ",
 			hl = { fg = colors.bg_statusline, bg = colors.blue2, bold = true },
 		},

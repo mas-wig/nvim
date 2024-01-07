@@ -154,9 +154,9 @@ return {
 			local wk = require("which-key")
 			wk.setup({
 				layout = {
-					height = { min = 4, max = 25 },
+					height = { min = 4, max = 15 },
 					width = { min = 20, max = 50 },
-					spacing = 3,
+					spacing = 2,
 					align = "left",
 				},
 				plugins = { marks = false, register = false },
