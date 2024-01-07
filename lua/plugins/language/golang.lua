@@ -3,7 +3,7 @@ return {
 	disable_defaults = false,
 	go = "go",
 	goimport = "goimports",
-	fillstruct = "fillstruct",
+	fillstruct = "gopls",
 	gofmt = false,
 	max_line_len = 128,
 	tag_transform = false,
