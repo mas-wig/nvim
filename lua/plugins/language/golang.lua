@@ -1,5 +1,5 @@
 local diagIcons = require("utils.icons").diagnostics
-return {
+return require("go").setup({
 	disable_defaults = false,
 	go = "go",
 	goimport = "goimports",
@@ -11,6 +11,7 @@ return {
 	icons = false,
 	verbose = false,
 	lsp_cfg = {
+		capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
 		settings = {
 			gopls = {
 				gofumpt = false,
@@ -124,4 +125,4 @@ return {
 			max_height = math.floor(vim.o.lines / 3),
 		},
 	},
-}
+})

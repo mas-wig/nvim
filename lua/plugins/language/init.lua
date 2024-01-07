@@ -1,5 +1,11 @@
 return {
-	{ "ray-x/go.nvim", ft = { "go", "gomod" }, opts = require("plugins.language.golang") },
+	{
+		"ray-x/go.nvim",
+		ft = { "go", "gomod" },
+		config = function()
+			require("plugins.language.golang")
+		end,
+	},
 	{ "jakewvincent/mkdnflow.nvim", ft = "markdown", opts = require("plugins.language.markdown") },
 	{
 		"p00f/clangd_extensions.nvim",
