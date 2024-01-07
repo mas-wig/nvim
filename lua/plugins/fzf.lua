@@ -55,14 +55,14 @@ return {
 			{ "<leader>hfS", fzf.git_stash, desc = "`git stash`" },
 
 			-- Grep
-			{ "<leader>ss", fzf.grep, desc = "Grep Pattern with `grep` or `rg`" },
+			{ "<leader>ss", fzf.grep, desc = "Pattern with `grep` or `rg`" },
 			{ "<leader>sS", fzf.grep_last, desc = "Run Last Grep" },
 			{ "<leader>sB", fzf.grep_curbuf, desc = "Grep Current Buffer" },
 			{ "<leader>sb", fzf.lgrep_curbuf, desc = "Live Grep current buffer" },
 			{ "<leader>sw", fzf.live_grep, desc = "Live Grep Current Project" },
-			{ "<leader>sl", fzf.live_grep_resume, desc = "Live Grep last search" },
-			{ "<leader>sf", fzf.live_grep_native, desc = "Performant Version of live_grep" },
-			{ "<leader>sg", fzf.live_grep_glob, desc = "Live Grep With rg --glob support" },
+			{ "<leader>sW", fzf.live_grep_resume, desc = "Live Grep last search" },
+			{ "<leader>sn", fzf.live_grep_native, desc = "Native of live_grep" },
+			{ "<leader>sg", fzf.live_grep_glob, desc = "Live Grep With rg --glob" },
 
 			-- dap
 			{ "<leader>dsc", fzf.dap_commands, desc = "Command" },
