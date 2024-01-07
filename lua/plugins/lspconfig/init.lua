@@ -123,7 +123,8 @@ return {
 					end,
 				})
 
-				local lang_servers, ft_servers = { lua = { "lua_ls" }, c = { "clangd" }, cpp = { "clangd" } }, {}
+				local lang_servers, ft_servers =
+					{ lua = { "lua_ls" }, c = { "clangd" }, cpp = { "clangd" }, markdown = { "marksman" } }, {}
 
 				for langs, sname in pairs(lang_servers) do
 					ft_servers[langs] = sname
