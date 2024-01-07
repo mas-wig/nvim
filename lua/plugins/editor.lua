@@ -300,4 +300,27 @@ return {
 			},
 		},
 	},
+
+	{
+		"m4xshen/hardtime.nvim",
+		event = "BufRead",
+		opts = {
+			hint = true,
+			notification = false,
+			disabled_filetypes = {
+				"qf",
+				"netrw",
+				"lazy",
+				"mason",
+				"oil",
+				"prompt",
+				"Trouble",
+				"toggleterm",
+				"dbout",
+				"neotest--summary",
+				"dbui",
+				"oil_preview",
+			},
+		},
+	},
 }
