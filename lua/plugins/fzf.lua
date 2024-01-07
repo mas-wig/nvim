@@ -40,9 +40,10 @@ return {
 			{ "<leader>fc", fzf.changes, desc = "Changes" },
 			{ "<leader>fj", fzf.jumps, desc = "Jumps" },
 			{ "<leader>fk", fzf.keymaps, desc = "Keymaps" },
-			{ "<leader>fr", fzf.registers, desc = "Registers" },
+			{ "<leader>fR", fzf.registers, desc = "Registers" },
 			{ "<leader>fd", fzf.diagnostics_document, desc = "Document Diagnostics" },
 			{ "<leader>fD", fzf.diagnostics_workspace, desc = "Workspace Diagnostics" },
+			{ "<leader>fr", fzf.resume, desc = "Find Resume" },
 
 			-- git
 			{ "<leader><leader>", fzf.git_files, desc = "Find Git Files" },
@@ -226,7 +227,7 @@ return {
 				finder = { prompt = " Lsp Finder : ", fzf_opts = fzf_opts },
 				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds, fzf_opts = fzf_opts },
 			},
-			args = { prompt = " Args : ", git_icons = false, fzf_opts = fzf_opts },
+			args = { prompt = " Args : ", git_icons = false, fzf_opts = fzf_opts, files_only = true },
 			oldfiles = { prompt = " Old Files : ", git_icons = false, fzf_opts = fzf_opts },
 			buffers = { prompt = " Buffers : ", git_icons = false, fzf_opts = fzf_opts },
 			tabs = { winopts = no_preview_winopts, prompt = " Tabs : ", fzf_opts = fzf_opts },
@@ -247,6 +248,15 @@ return {
 				},
 			},
 			git = {
+				icons = {
+					["M"] = { icon = icons.git.modified, color = "yellow" },
+					["D"] = { icon = icons.git.removed, color = "red" },
+					["A"] = { icon = icons.git.added, color = "green" },
+					["R"] = { icon = icons.git.renamed, color = "yellow" },
+					["C"] = { icon = icons.git.unstage, color = "yellow" }, --copied
+					["T"] = { icon = icons.git.ignored, color = "magenta" }, -- type change
+					["?"] = { icon = icons.git.untracked, color = "magenta" },
+				},
 				branches = {
 					prompt = " Git Branches : ",
 					fzf_opts = fzf_opts,
@@ -300,6 +310,8 @@ return {
 				["marker"] = { "fg", "GitSignsChange" },
 			},
 			file_icon_padding = " ",
+			global_resume = true, -- enable global `resume`?
+			global_resume_query = true, -- include typed query in `resume`?
 		})
 	end,
 }

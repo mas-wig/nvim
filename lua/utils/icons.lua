@@ -32,7 +32,7 @@ return {
 		added = " ",
 		modified = " ",
 		removed = " ",
-		pencil = " ",
+		renamed = " ",
 		unstage = " ",
 		stage = " ",
 		untracked = " ",
