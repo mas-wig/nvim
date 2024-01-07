@@ -2,15 +2,62 @@ local diagIcons = require("utils.icons").diagnostics
 return {
 	disable_defaults = false,
 	go = "go",
-	goimport = "gopls",
+	goimport = "goimports",
 	fillstruct = "fillstruct",
-	gofmt = "gofumpt",
+	gofmt = false,
 	max_line_len = 128,
 	tag_transform = false,
 	tag_options = "json=omitempty",
 	icons = false,
 	verbose = false,
-	lsp_cfg = true,
+	lsp_cfg = {
+		settings = {
+			gopls = {
+				gofumpt = false,
+				codelenses = {
+					gc_details = false,
+					generate = true,
+					regenerate_cgo = true,
+					run_govulncheck = true,
+					test = true,
+					tidy = true,
+					upgrade_dependency = true,
+					vendor = true,
+				},
+				hints = {
+					assignVariableTypes = true,
+					compositeLiteralFields = true,
+					compositeLiteralTypes = true,
+					constantValues = true,
+					functionTypeParameters = true,
+					parameterNames = true,
+					rangeVariableTypes = true,
+				},
+				analyses = {
+					fieldalignment = true,
+					nilness = true,
+					unusedparams = true,
+					unusedwrite = true,
+					useany = true,
+					unreachable = true,
+					ST1003 = true,
+					undeclaredname = true,
+					fillreturns = true,
+					nonewvars = true,
+					shadow = true,
+				},
+				usePlaceholders = true,
+				completeUnimported = true,
+				staticcheck = true,
+				directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+				semanticTokens = true,
+				matcher = "Fuzzy",
+				diagnosticsDelay = "500ms",
+				symbolMatcher = "fuzzy",
+				buildFlags = { "-tags", "integration" },
+			},
+		},
+	},
 	lsp_gofumpt = false,
 	lsp_keymaps = false,
 	lsp_codelens = true,
@@ -24,7 +71,8 @@ return {
 	test_efm = false,
 	luasnip = true,
 	iferr_vertical_shift = 4,
-	lsp_on_attach = function(client, _)
+	lsp_on_attach = function(client, bufnr)
+		require("plugins.lspconfig.default").on_attach(client, bufnr)
 		if not client.server_capabilities.semanticTokensProvider then
 			local semantic = client.config.capabilities.textDocument.semanticTokens
 			client.server_capabilities.semanticTokensProvider = {
@@ -39,7 +87,18 @@ return {
 		update_in_insert = false,
 		severity_sort = true,
 		signs = {
-			text = { [1] = diagIcons.Error, [2] = diagIcons.Warn, [3] = diagIcons.Hint, [4] = diagIcons.Info },
+			text = {
+				[vim.diagnostic.severity.ERROR] = diagIcons.Error,
+				[vim.diagnostic.severity.WARN] = diagIcons.Warn,
+				[vim.diagnostic.severity.INFO] = diagIcons.Hint,
+				[vim.diagnostic.severity.HINT] = diagIcons.Info,
+			},
+			numhl = {
+				[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+				[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+				[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+				[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+			},
 		},
 		virtual_text = {
 			spacing = 4,

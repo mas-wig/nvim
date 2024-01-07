@@ -209,11 +209,11 @@ return {
 			lsp = {
 				code_actions = {
 					prompt = " Code Action : ",
-					fzf_opts = { ["--color"] = "separator:cyan", ["--info"] = "right" },
+					fzf_opts = fzf_opts,
 					winopts = { height = 0.3, width = 0.55, row = 0.45, preview = { hidden = "hidden" } },
 				},
 				finder = { prompt = " Lsp Finder : ", fzf_opts = fzf_opts },
-				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds },
+				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds, fzf_opts = fzf_opts },
 			},
 			args = { prompt = " Args : ", git_icons = false, fzf_opts = fzf_opts },
 			oldfiles = { prompt = " Old Files : ", git_icons = false, fzf_opts = fzf_opts },

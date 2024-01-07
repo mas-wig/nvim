@@ -2,7 +2,6 @@ vim.loader.enable()
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-
 vim.g.loaded_2html_plugin = 1
 vim.g.loaded_gzip = 1
 vim.g.loaded_matchit = 1
@@ -16,6 +15,8 @@ vim.g.loaded_zipPlugin = 1
 vim.g.loaded_fzf_file_explorer = 1
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+vim.g.matchparen_timeout = 2 -- https://vi.stackexchange.com/a/5318/12823
+vim.g.matchparen_insert_timeout = 2
 
 vim.opt.showtabline = 0
 vim.opt.cmdheight = 0
@@ -68,12 +69,12 @@ vim.opt.switchbuf = "useopen,uselast"
 vim.opt.synmaxcol = 300
 vim.opt.whichwrap = "h,l"
 vim.opt.visualbell = true
+vim.opt.cursorcolumn = true
+vim.opt.cursorlineopt = "both"
 vim.opt.diffopt:append("algorithm:histogram")
 vim.opt.wildignore:append(
 	"*.png,*.jpg,*.jpeg,*.gif,*.wav,*.aiff,*.dll,*.pdb,*.mdb,*.so,*.swp,*.zip,*.gz,*.bz2,*.meta,*.svg,*.cache,*/.git/*"
 )
-vim.opt.cursorcolumn = true
-vim.opt.cursorlineopt = "both"
 
 if vim.fn.executable("rg") == 1 then
 	vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"

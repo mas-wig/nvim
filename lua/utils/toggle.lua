@@ -52,13 +52,12 @@ function M.inlay_hints(buf, value)
 	local ih = vim.lsp.buf.inlay_hint or vim.lsp.inlay_hint
 	if type(ih) == "function" then
 		ih(buf, value)
-		Util.info("Enabled Inlay Hint", { title = "Inlay Hint" })
 	elseif type(ih) == "table" and ih.enable then
 		if value == nil then
 			value = not ih.is_enabled(buf)
 		end
 		ih.enable(buf, value)
-		Util.info("Disabled Inlay Hint", { title = "Inlay Hint" })
+		Util.info("Enabled Inlay Hint", { title = "Inlay Hint" })
 	end
 end
 

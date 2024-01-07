@@ -3,7 +3,7 @@ return {
 	{ "saadparwaiz1/cmp_luasnip", event = "InsertEnter" },
 	{ "FelipeLema/cmp-async-path", event = { "InsertEnter" } },
 	{ "lukas-reineke/cmp-rg", event = "InsertEnter" },
-	{ "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
+	{ "hrsh7th/cmp-cmdline", event = "InsertEnter" },
 	{ "rafamadriz/friendly-snippets", event = "InsertEnter" },
 	{
 		"L3MON4D3/LuaSnip",
@@ -12,7 +12,7 @@ return {
 		config = function()
 			local luasnip = require("luasnip")
 			local t = require("luasnip.util.types")
-			local virtual_text = { unvisited = { virt_text = { { "|", "Conceal" } }, virt_text_pos = "inline" } }
+			local virtual_text = { unvisited = { virt_text = { { "|", "Conceal" } } } }
 			luasnip.setup({ ext_opts = { [t.insertNode] = virtual_text, [t.exitNode] = virtual_text } })
 			require("luasnip.loaders.from_vscode").lazy_load()
 			vim.api.nvim_create_autocmd("ModeChanged", {
