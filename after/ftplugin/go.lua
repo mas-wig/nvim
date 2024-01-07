@@ -34,4 +34,8 @@ if vim.lsp.get_clients({ name = "gopls" }) then
 			end
 		end)
 	end, { desc = "Implementation" })
+
+	map("n", "<leader>jb", function()
+		vim.ui.select({ prompt = "Go Build (args) : " })
+	end, { desc = "Go Build" })
 end
