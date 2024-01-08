@@ -28,7 +28,7 @@ return {
 				opts = params.opts
 				opts = vim.tbl_deep_extend("force", { cwd = require("utils.dir").root() }, opts or {})
 				if builtin == "files" then
-					if vim.loop.fs_stat((opts.cwd or vim.loop.cwd()) .. "/.git") then
+					if vim.loop.fs_stat((opts.cwd or vim.uv.cwd()) .. "/.git") then
 						builtin = "git_files"
 					else
 						builtin = "files"
