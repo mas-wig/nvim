@@ -138,7 +138,7 @@ return {
 				},
 			},
 			winopts = {
-				height = 0.75,
+				height = 0.80,
 				width = 0.90,
 				row = 0.40,
 				col = 0.50,
@@ -149,7 +149,7 @@ return {
 					wrap = "nowrap",
 					hidden = "nohidden",
 					-- vertical = "down:45%",
-					horizontal = "right:55%",
+					horizontal = "right:53%",
 					layout = "flex",
 					flip_columns = 120,
 					title = false,
