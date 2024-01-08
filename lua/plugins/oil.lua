@@ -304,6 +304,14 @@ return {
 				["gh"] = "actions.toggle_hidden",
 				["gs"] = "actions.change_sort",
 				["gx"] = "actions.open_external",
+				["gr"] = {
+					mode = "n",
+					desc = "Go to Root Dir",
+					buffer = true,
+					callback = function()
+						return oil.open(require("utils.dir").root())
+					end,
+				},
 				["go"] = {
 					mode = "n",
 					buffer = true,
