@@ -163,7 +163,6 @@ return {
 		"mfussenegger/nvim-lint",
 		event = "LspAttach",
 		opts = {
-			events = { "BufWritePost", "BufReadPost", "InsertLeave" },
 			linters_by_ft = {},
 			linters = {
 				selene = {
@@ -219,10 +218,9 @@ return {
 					lint.try_lint(names)
 				end
 			end
-			vim.api.nvim_create_autocmd(opts.events, {
-				group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
-				callback = M.debounce(100, M.lint),
-			})
+			vim.keymap.set("n", "<C-l>", function()
+				M.debounce(100, M.lint)
+			end, { desc = "Lint this files", buffer = vim.api.nvim_get_current_buf() })
 		end,
 	},
 }
