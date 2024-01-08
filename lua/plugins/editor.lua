@@ -22,22 +22,6 @@ return {
 	},
 
 	{
-		"nvim-pack/nvim-spectre",
-		build = false,
-		cmd = "Spectre",
-		opts = { open_cmd = "noswapfile vnew", live_update = false },
-		keys = {
-			{
-				"<leader>sr",
-				function()
-					require("spectre").open()
-				end,
-				desc = "Replace in files (Spectre)",
-			},
-		},
-	},
-
-	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble" },
 		opts = {
@@ -127,7 +111,7 @@ return {
 				enable_check_bracket_line = true,
 				ignored_next_char = [=[[%w%%%'%[%"%.%`]]=],
 				fast_wrap = {
-					map = "<M-c>",
+					map = "<A-c>",
 					chars = { "{", "[", "(", '"', "'", "`" },
 					pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
 					offset = 0, -- Offset from pattern match
