@@ -320,6 +320,7 @@ return {
 				"neotest--summary",
 				"dbui",
 				"oil_preview",
+				"help",
 			},
 		},
 	},
