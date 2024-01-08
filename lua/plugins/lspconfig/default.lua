@@ -22,18 +22,52 @@ end
 
 return {
 	on_attach = function(client, bufnr)
-        -- stylua: ignore start
-		vim.lsp.handlers[method.textDocument_references] = function() trouble("lsp_references") end
-		vim.lsp.handlers[method.textDocument_implementation] = function() trouble("lsp_implementations") end
-		vim.lsp.handlers[method.textDocument_definition] = function() trouble("lsp_definitions") end
-		vim.lsp.handlers[method.textDocument_typeDefinition] = function() trouble("lsp_type_definitions") end
+		vim.lsp.handlers[method.textDocument_references] = function()
+			trouble("lsp_references")
+		end
+		vim.lsp.handlers[method.textDocument_implementation] = function()
+			trouble("lsp_implementations")
+		end
+		vim.lsp.handlers[method.textDocument_definition] = function()
+			trouble("lsp_definitions")
+		end
+		vim.lsp.handlers[method.textDocument_typeDefinition] = function()
+			trouble("lsp_type_definitions")
+		end
 		vim.lsp.handlers[method.callHierarchy_incomingCalls] = fzf.lsp_incoming_calls
 		vim.lsp.handlers[method.callHierarchy_outgoingCalls] = fzf.lsp_outgoing_calls
 		vim.lsp.handlers[method.textDocument_codeAction] = fzf.code_actions
 		vim.lsp.handlers[method.textDocument_declaration] = fzf.declarations
 		vim.lsp.handlers[method.textDocument_documentSymbol] = fzf.lsp_document_symbols
 		vim.lsp.handlers[method.workspace_symbol] = fzf.lsp_live_workspace_symbols
-		-- stylua: ignore end
+
+		local renameHandler = vim.lsp.handlers[method.textDocument_rename]
+		vim.lsp.handlers[method.textDocument_rename] = function(err, result, ctx, config)
+			renameHandler(err, result, ctx, config)
+			if err or not result then
+				return
+			end
+			vim.cmd.wall()
+			local changes = result.changes or result.documentChanges or {}
+			local changedFiles = vim.tbl_keys(changes)
+			changedFiles = vim.tbl_filter(function(file)
+				return #changes[file] > 0
+			end, changedFiles)
+			changedFiles = vim.tbl_map(function(file)
+				return "- " .. vim.fs.basename(file)
+			end, changedFiles)
+
+			local changeCount = 0
+			for _, change in pairs(changes) do
+				changeCount = changeCount + #(change.edits or change)
+			end
+
+			local msg = string.format("%s instance%s", changeCount, (changeCount > 1 and "s" or ""))
+			if #changedFiles > 1 then
+				msg = msg .. (" in %s files:\n"):format(#changedFiles) .. table.concat(changedFiles, "\n")
+			end
+			vim.notify(string.format("Renamed with LSP %s", msg), 2)
+		end
 
 		if vim.g.inlay_hints then
 			if client.supports_method(method.textDocument_inlayHint) then
