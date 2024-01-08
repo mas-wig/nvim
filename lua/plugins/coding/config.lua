@@ -3,10 +3,18 @@ local C = {}
 local cache = { cpp = { args = {} } }
 
 C.go = {
-	{ type = "delve", name = "Debug", request = "launch", program = "${file}" },
-	{ type = "delve", name = "Debug test", request = "launch", mode = "test", program = "${file}" },
+	{ type = "go", name = "Debug", request = "launch", program = "${file}" },
+	{ type = "go", name = "Debug Package", request = "launch", program = "${fileDirname}" },
 	{
-		type = "delve",
+		type = "go",
+		name = "Attach",
+		mode = "local",
+		request = "attach",
+		processId = require("dap.utils").pick_process,
+	},
+	{ type = "go", name = "Debug test", request = "launch", mode = "test", program = "${file}" },
+	{
+		type = "go",
 		name = "Debug test (go.mod)",
 		request = "launch",
 		mode = "test",

@@ -44,16 +44,27 @@ return {
 		},
 		config = function()
 			local dap, dapui, icons = require("dap"), require("dapui"), require("utils.icons").dap
-            -- stylua: ignore start
 			vim.fn.sign_define("DapBreakpoint", { text = icons.Breakpoint, texthl = "DiagnosticSignHint" })
-			vim.fn.sign_define( "DapBreakpointCondition", { text = icons.BreakpointCondition, texthl = "DiagnosticSignInfo" })
-			vim.fn.sign_define( "DapBreakpointRejected", { text = icons.BreakpointRejected, texthl = "DiagnosticSignWarn" })
+			vim.fn.sign_define(
+				"DapBreakpointCondition",
+				{ text = icons.BreakpointCondition, texthl = "DiagnosticSignInfo" }
+			)
+			vim.fn.sign_define(
+				"DapBreakpointRejected",
+				{ text = icons.BreakpointRejected, texthl = "DiagnosticSignWarn" }
+			)
 			vim.fn.sign_define("DapLogPoint", { text = icons.LogPoint, texthl = "DiagnosticSignOk" })
 			vim.fn.sign_define("DapStopped", { text = icons.Stopped, texthl = "DiagnosticSignError" })
-			dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open({}) end
-			dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close({}) end
-			dap.listeners.before.event_exited["dapui_config"] = function() dapui.close({}) end
-			-- stylua: ignore end
+			dap.listeners.after.event_initialized["dapui_config"] = function()
+				dapui.open({})
+			end
+			dap.listeners.before.event_terminated["dapui_config"] = function(e)
+				vim.notify(string.format("program '%s' was terminated.", vim.fn.fnamemodify(e.config.program, ":t")), 2)
+				dapui.close({})
+			end
+			dap.listeners.before.event_exited["dapui_config"] = function()
+				dapui.close({})
+			end
 			dap.adapters = require("plugins.coding.adapter")
 			dap.configurations = require("plugins.coding.config")
 		end,
