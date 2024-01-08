@@ -21,55 +21,71 @@ return {
 		end
 	end,
 	keys = function()
-		local fzf = require("fzf-lua")
+		local function fzf(builtin, opts)
+			local params = { builtin = builtin, opts = opts }
+			return function()
+				builtin = params.builtin
+				opts = params.opts
+				opts = vim.tbl_deep_extend("force", { cwd = require("utils.dir").root() }, opts or {})
+				if builtin == "files" then
+					if vim.loop.fs_stat((opts.cwd or vim.loop.cwd()) .. "/.git") then
+						builtin = "git_files"
+					else
+						builtin = "files"
+					end
+				end
+				require("fzf-lua")[builtin](opts)
+			end
+		end
+
 		return {
-			{ "<leader>fB", fzf.builtin, desc = "Find Builtin" },
-			{ "<leader>fb", fzf.buffers, desc = "Find Buffers" },
-			{ "<leader>ff", fzf.files, desc = "Find Files (root)" },
-			{ "<leader>fo", fzf.oldfiles, desc = "Find Old Files" },
-			{ "<leader>fq", fzf.quickfix, desc = "Quick Fix Item" },
-			{ "<leader>fl", fzf.lines, desc = "Find in Lines" },
-			{ "<leader>ft", fzf.tabs, desc = "Find Tabs" },
-			{ "<leader>fa", fzf.args, desc = "Args" },
-			{ "<leader>fh", fzf.help_tags, desc = "Help Tags" },
-			{ "<leader>fm", fzf.man_pages, desc = "Man Pages" },
-			{ "<leader>fH", fzf.highlights, desc = "Highlight Groups" },
-			{ "<leader>fc", fzf.commands, desc = "Neovim Commands" },
-			{ "<leader>fz", fzf.search_history, desc = "Search History" },
-			{ "<leader>fm", fzf.marks, desc = "Marks" },
-			{ "<leader>fc", fzf.changes, desc = "Changes" },
-			{ "<leader>fj", fzf.jumps, desc = "Jumps" },
-			{ "<leader>fk", fzf.keymaps, desc = "Keymaps" },
-			{ "<leader>fR", fzf.registers, desc = "Registers" },
-			{ "<leader>fd", fzf.diagnostics_document, desc = "Document Diagnostics" },
-			{ "<leader>fD", fzf.diagnostics_workspace, desc = "Workspace Diagnostics" },
-			{ "<leader>fr", fzf.resume, desc = "Find Resume" },
+			{ "<leader>fB", fzf("builtin"), desc = "Find Builtin" },
+			{ "<leader>fb", fzf("buffers"), desc = "Find Buffers" },
+			{ "<leader>ff", fzf("files"), desc = "Find Files (root)" },
+			{ "<leader>fo", fzf("oldfiles"), desc = "Find Old Files" },
+			{ "<leader>fq", fzf("quickfix"), desc = "Quick Fix Item" },
+			{ "<leader>fl", fzf("lines"), desc = "Find in Lines" },
+			{ "<leader>ft", fzf("tabs"), desc = "Find Tabs" },
+			{ "<leader>fa", fzf("args"), desc = "Args" },
+			{ "<leader>fh", fzf("help_tags"), desc = "Help Tags" },
+			{ "<leader>fm", fzf("man_pages"), desc = "Man Pages" },
+			{ "<leader>fH", fzf("highlights"), desc = "Highlight Groups" },
+			{ "<leader>fc", fzf("commands"), desc = "Neovim Commands" },
+			{ "<leader>fz", fzf("search_history"), desc = "Search History" },
+			{ "<leader>fm", fzf("marks"), desc = "Marks" },
+			{ "<leader>fc", fzf("changes"), desc = "Changes" },
+			{ "<leader>fj", fzf("jumps"), desc = "Jumps" },
+			{ "<leader>fk", fzf("keymaps"), desc = "Keymaps" },
+			{ "<leader>fR", fzf("registers"), desc = "Registers" },
+			{ "<leader>fd", fzf("diagnostics_document"), desc = "Document Diagnostics" },
+			{ "<leader>fD", fzf("diagnostics_workspace"), desc = "Workspace Diagnostics" },
+			{ "<leader>fr", fzf("resume"), desc = "Find Resume" },
 
 			-- git
-			{ "<leader><leader>", fzf.git_files, desc = "Find Git Files" },
-			{ "<leader>hfs", fzf.git_status, desc = "`git status`" },
-			{ "<leader>hfc", fzf.git_commits, desc = "Git Commit Log (project)" },
-			{ "<leader>hfB", fzf.git_branches, desc = "`git branches`" },
-			{ "<leader>hfb", fzf.git_bcommits, desc = "Git Commit Log (buffer)" },
-			{ "<leader>hft", fzf.git_tags, desc = "`git tags`" },
-			{ "<leader>hfS", fzf.git_stash, desc = "`git stash`" },
+			{ "<leader><leader>", fzf("git_files"), desc = "Find Git Files" },
+			{ "<leader>hfs", fzf("git_status"), desc = "`git status`" },
+			{ "<leader>hfc", fzf("git_commits"), desc = "Git Commit Log (project)" },
+			{ "<leader>hfB", fzf("git_branches"), desc = "`git branches`" },
+			{ "<leader>hfb", fzf("git_bcommits"), desc = "Git Commit Log (buffer)" },
+			{ "<leader>hft", fzf("git_tags"), desc = "`git tags`" },
+			{ "<leader>hfS", fzf("git_stash"), desc = "`git stash`" },
 
 			-- Grep
-			{ "<leader>ss", fzf.grep, desc = "Pattern with `grep` or `rg`" },
-			{ "<leader>sS", fzf.grep_last, desc = "Run Last Grep" },
-			{ "<leader>sB", fzf.grep_curbuf, desc = "Grep Current Buffer" },
-			{ "<leader>sb", fzf.lgrep_curbuf, desc = "Live Grep current buffer" },
-			{ "<leader>sw", fzf.live_grep, desc = "Live Grep Current Project" },
-			{ "<leader>sW", fzf.live_grep_resume, desc = "Live Grep last search" },
-			{ "<leader>sn", fzf.live_grep_native, desc = "Native of live_grep" },
-			{ "<leader>sg", fzf.live_grep_glob, desc = "Live Grep With rg --glob" },
+			{ "<leader>ss", fzf("grep"), desc = "Pattern with `grep` or `rg`" },
+			{ "<leader>sS", fzf("grep_last"), desc = "Run Last Grep" },
+			{ "<leader>sB", fzf("grep_curbuf"), desc = "Grep Current Buffer" },
+			{ "<leader>sb", fzf("lgrep_curbuf"), desc = "Live Grep current buffer" },
+			{ "<leader>sw", fzf("live_grep"), desc = "Live Grep Current Project" },
+			{ "<leader>sW", fzf("live_grep_resume"), desc = "Live Grep last search" },
+			{ "<leader>sn", fzf("live_grep_native"), desc = "Native of live_grep" },
+			{ "<leader>sg", fzf("live_grep_glob"), desc = "Live Grep With rg --glob" },
 
 			-- dap
-			{ "<leader>dsc", fzf.dap_commands, desc = "Command" },
-			{ "<leader>dsC", fzf.dap_configurations, desc = "Configuration" },
-			{ "<leader>dsb", fzf.dap_breakpoints, desc = "Breakpoint" },
-			{ "<leader>dsv", fzf.dap_variables, desc = "Active Session Variables" },
-			{ "<leader>dsf", fzf.dap_frames, desc = "Frames" },
+			{ "<leader>dsc", fzf("dap_commands"), desc = "Command" },
+			{ "<leader>dsC", fzf("dap_configurations"), desc = "Configuration" },
+			{ "<leader>dsb", fzf("dap_breakpoints"), desc = "Breakpoint" },
+			{ "<leader>dsv", fzf("dap_variables"), desc = "Active Session Variables" },
+			{ "<leader>dsf", fzf("dap_frames"), desc = "Frames" },
 		}
 	end,
 	config = function()
