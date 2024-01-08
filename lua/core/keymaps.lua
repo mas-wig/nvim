@@ -60,7 +60,7 @@ map("i", ".", ".<c-g>u")
 map("i", ";", ";<c-g>u")
 
 -- save file
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>wall<cr><esc>", { desc = "Save file", silent = true })
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>wall<cr>", { desc = "Save file", silent = true })
 
 --keywordprg
 map("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
