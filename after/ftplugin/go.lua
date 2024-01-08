@@ -6,7 +6,6 @@ if vim.lsp.get_clients({ name = "gopls" }) then
 	map("n", "<leader>jf", "<cmd>GoFillStruct<cr>", { desc = "Auto Sill Struct" })
 	map("n", "<leader>je", "<cmd>GoIfErr<cr>", { desc = "Add If Err" })
 	map("n", "<leader>jp", "<cmd>GoFixPlurals<cr>", { desc = "Fix Plurals Func" })
-	map("n", "<leader>jo", "<cmd>GoPkgOutline<cr>", { desc = "Symbols Outline" })
 	map("n", "<leader>jC", "<cmd>GoClearTag<cr>", { desc = "Clear All Tags" })
 	map("n", "<leader>jc", "<cmd>GoCmt<cr>", { desc = "Add comment" })
 	map("n", "<leader>ja", "<cmd>GoModInit<cr>", { desc = "`go mod init`" })

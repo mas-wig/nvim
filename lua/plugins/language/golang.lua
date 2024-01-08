@@ -7,7 +7,7 @@ return require("go").setup({
 	gofmt = false,
 	max_line_len = 128,
 	tag_transform = false,
-	tag_options = "json=omitempty",
+	tag_options = "",
 	icons = false,
 	verbose = false,
 	lsp_cfg = {
