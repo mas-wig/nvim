@@ -139,3 +139,48 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 	end,
 })
+
+vim.api.nvim_create_autocmd("BufReadPre", {
+	desc = "Set settings for large files.",
+	callback = function(info)
+		vim.b.midfile = false
+		vim.b.bigfile = false
+		local stat = vim.uv.fs_stat(info.match)
+		if not stat then
+			return
+		end
+		if stat.size > 48000 then
+			vim.b.midfile = true
+			vim.api.nvim_create_autocmd("BufReadPost", {
+				buffer = info.buf,
+				once = true,
+				callback = function()
+					vim.schedule(function()
+						pcall(vim.treesitter.stop, info.buf)
+					end)
+					return true
+				end,
+			})
+		end
+		if stat.size > 1024000 then
+			vim.b.bigfile = true
+			vim.opt_local.spell = false
+			vim.opt_local.swapfile = false
+			vim.opt_local.undofile = false
+			vim.opt_local.breakindent = false
+			vim.opt_local.colorcolumn = ""
+			vim.opt_local.statuscolumn = ""
+			vim.opt_local.signcolumn = "no"
+			vim.opt_local.foldcolumn = "0"
+			vim.opt_local.winbar = ""
+			vim.api.nvim_create_autocmd("BufReadPost", {
+				buffer = info.buf,
+				once = true,
+				callback = function()
+					vim.opt_local.syntax = ""
+					return true
+				end,
+			})
+		end
+	end,
+})

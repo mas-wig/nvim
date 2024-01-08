@@ -24,9 +24,11 @@ return {
 					header = vim.split(logo, "\n"),
 					center = {
                         -- stylua: ignore start
-						{ action = "FzfLua files", desc = "Find Files", icon = " ", key = "n", },
-						{ action = "ene | startinsert", desc = " New file", icon = " ", key = "n", },
-						{ action = "LazyExtras", desc = " Lazy Extras", icon = " ", key = "x", },
+						{ action = "FzfLua files", desc = " Find Files", icon = " ", key = "f", },
+						{ action = "FzfLua oldfiles", desc = " Find Old Files", icon = "󰼨 ", key = "p", },
+						{ action = "Oil", desc = " File Explorer", icon = "󱇧 ", key = "o", },
+						{ action = "ToggleTerm", desc = " Open Terminal", icon = " ", key = "t", },
+						{ action = "lua  require'harpoon'.ui:toggle_quick_menu(require'harpoon':list())", desc = " Marks", icon = "󱪾 ", key = "m", },
 						{ action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l", },
 						{ action = "qa", desc = " Quit", icon = " ", key = "q", },
 						-- stylua: ignore start

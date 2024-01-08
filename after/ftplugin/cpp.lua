@@ -12,3 +12,15 @@ if vim.lsp.get_clients({ name = "clangd" }) then
 	map("n", "<leader>ji", "<cmd>ClangdSymbolInfo<cr>", { desc = "Symbol Info" })
 	map("n", "<leader>jh", "<cmd>ClangdTypeHierarchy<cr>", { desc = "Type Hierrarchy" })
 end
+
+local cmp_ok, cmp = pcall(require, "cmp")
+if cmp_ok then
+	cmp.setup.filetype({ "c", "cpp" }, {
+		sorting = {
+			comparators = vim.list_extend(
+				{ require("clangd_extensions.cmp_scores") },
+				require("cmp.config").get().sorting.comparators
+			),
+		},
+	})
+end
