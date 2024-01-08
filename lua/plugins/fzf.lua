@@ -318,7 +318,7 @@ return {
 				["hl"] = { "fg", "NeoTreeTabActive" },
 				["fg+"] = { "fg", "TelescopeSelection" },
 				["bg+"] = { "bg", "PmenuSel" },
-				["hl+"] = { "fg", "OilPermissionRead" },
+				["hl+"] = { "fg", "CmpItemAbbrMatch" },
 				["info"] = { "fg", "TelescopeCounter" },
 				["border"] = { "fg", "Comment" },
 				["gutter"] = { "bg", "TelescopeNormal" },

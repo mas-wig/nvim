@@ -73,10 +73,10 @@ local function hl_override(hl, c, util)
 	hl.OilCreate = { link = "DiagnosticSignInfo" }
 	hl.OilDelete = { link = "DiagnosticSignError" }
 	hl.OilChange = { link = "DiagnosticSignWarn" }
-	hl.OilPermissionRead = { fg = c.cyan1, bold = true }
+	hl.OilPermissionRead = { fg = c.yellow1, bold = true }
 	hl.OilPermissionNone = { link = "NonText" }
 	hl.OilPermissionWrite = { fg = c.green2, bold = true }
-	hl.OilPermissionExecute = { fg = c.yellow1, bold = true }
+	hl.OilPermissionExecute = { fg = c.magenta2, bold = true }
 	hl.OilTypeDir = { link = "Directory" }
 	hl.OilTypeFifo = { link = "Special" }
 	hl.OilTypeFile = { link = "NonText" }
@@ -102,6 +102,7 @@ return {
 				c.yellow1 = "#faf032"
 				c.cyan1 = "#00ffee"
 				c.purple1 = "#f242f5"
+				c.red2 = "#eb0000"
 			end,
 		})
 		vim.cmd.colorscheme("tokyonight-night")
