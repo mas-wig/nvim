@@ -276,14 +276,139 @@ return {
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
 		config = function()
-			require("harpoon"):setup({
+			local harpoon = require("harpoon")
+			require("harpoon.config").DEFAULT_LIST = "files"
+			harpoon:setup({
 				settings = {
 					save_on_toggle = true,
-					sync_on_ui_close = false,
+					sync_on_ui_close = true,
 					key = function()
-						return vim.loop.cwd()
+						return vim.uv.cwd() --[[@as string]]
 					end,
 				},
+				tmux = {
+					automated = true,
+					encode = false,
+					prepopulate = function(cb)
+						vim.system({
+							"tmux",
+							"list-sessions",
+						}, { text = true }, function(out)
+							if out.code ~= 0 then
+								return {}
+							end
+							local sessions = out.stdout or ""
+							local lines = {}
+							for s in sessions:gmatch("[^\r\n]+") do
+								table.insert(lines, { value = s, context = { row = 1, col = 1 } })
+							end
+							cb(lines)
+						end)
+					end,
+					select = function(list_item, _, _)
+						local sessionName = string.match(list_item.value, "([^:]+)")
+						vim.system({ "tmux", "switch-client", "-t", sessionName }, {}, function() end)
+					end,
+					remove = function(list_item, _)
+						local sessionName = string.match(list_item.value, "([^:]+)")
+						vim.system({ "tmux", "kill-session", "-t", sessionName }, {}, function() end)
+					end,
+				},
+				terminals = {
+					automated = true,
+					encode = false,
+					prepopulate = function()
+						local bufs = vim.api.nvim_list_bufs()
+						return vim.iter(bufs)
+							:filter(function(buf)
+								return vim.bo[buf].buftype == "terminal"
+							end)
+							:map(function(buf)
+								return {
+									value = vim.api.nvim_buf_get_name(buf),
+									context = {
+										bufnr = buf,
+									},
+								}
+							end)
+							:totable()
+					end,
+					remove = function(list_item, _)
+						if vim.api.nvim_buf_is_valid(list_item.context.bufnr) then
+							require("mini.bufremove").delete(list_item.context.bufnr, true)
+						end
+					end,
+					select = function(list_item, _, _)
+						local wins = vim.api.nvim_tabpage_list_wins(0)
+						-- jump to existing window containing the buffer
+						for _, win in ipairs(wins) do
+							local buf = vim.api.nvim_win_get_buf(win)
+							if buf == list_item.context.bufnr then
+								vim.api.nvim_set_current_win(win)
+								return
+							end
+						end
+						-- switch to the buffer if no window was found
+						vim.api.nvim_set_current_buf(list_item.context.bufnr)
+					end,
+				},
+				default = {},
+			})
+
+			---@param list HarpoonList
+			local function prepopulate(list)
+				---@diagnostic disable-next-line: undefined-field
+				if list.config.prepopulate and list:length() == 0 then
+					-- async via callback, or sync via return value
+					local sync_items =
+						---@diagnostic disable-next-line: undefined-field
+						list.config.prepopulate(function(items)
+							if type(items) ~= "table" then
+								return
+							end
+							for _, item in ipairs(items) do
+								list:append(item)
+							end
+							-- if ui is open, buffer needs to be updated
+							-- so that items aren't removed immediately after being added
+							vim.schedule(function()
+								local ui_buf = harpoon.ui.bufnr
+								if ui_buf and vim.api.nvim_buf_is_valid(ui_buf) then
+									local lines = list:display()
+									vim.api.nvim_buf_set_lines(ui_buf, 0, -1, false, lines)
+								end
+							end)
+						end)
+					if sync_items and type(sync_items) == "table" then
+						for _, item in ipairs(sync_items) do
+							list:append(item)
+						end
+					end
+				end
+			end
+
+			harpoon:extend({
+				UI_CREATE = function(cx)
+					local win = cx.win_id
+					vim.wo[win].cursorline = true
+					vim.wo[win].signcolumn = "no"
+
+					vim.keymap.set("n", "<C-v>", function()
+						harpoon.ui:select_menu_item({ vsplit = true })
+					end, { buffer = cx.bufnr })
+					vim.keymap.set("n", "<C-s>", function()
+						harpoon.ui:select_menu_item({ split = true })
+					end, { buffer = cx.bufnr })
+				end,
+				---@param list HarpoonList
+				LIST_READ = function(list)
+					---@diagnostic disable-next-line: undefined-field
+					if list.config.automated then
+						list:clear()
+						prepopulate(list)
+					end
+				end,
+				LIST_CREATED = prepopulate,
 			})
 		end,
 		keys = function()
