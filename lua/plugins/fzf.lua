@@ -1,7 +1,3 @@
--- stylua: ignore start
-local fzf_opts = { ["--no-scrollbar"] = "", ["--color"] = "separator:cyan", ["--info"] = "right", ["--marker"] = "󰍎 ", ["--pointer"] = " ", ["--padding"] = "0,1", ["--margin"] = "0", }
--- stylua: ignore end
-
 return {
 	"ibhagwan/fzf-lua",
 	init = function()
@@ -15,7 +11,18 @@ return {
 				elseif h > max_h then
 					h = max_h
 				end
-				return { winopts = { height = h, width = 0.55, row = 0.45 }, fzf_opts = fzf_opts }
+				return {
+					winopts = { height = h, width = 0.55, row = 0.45 },
+					fzf_opts = {
+						["--no-scrollbar"] = "",
+						["--color"] = "separator:cyan",
+						["--info"] = "right",
+						["--marker"] = "󰍎 ",
+						["--pointer"] = " ",
+						["--padding"] = "0,1",
+						["--margin"] = "0",
+					},
+				}
 			end)
 			return vim.ui.select(...)
 		end
@@ -26,7 +33,18 @@ return {
 			return function()
 				builtin = params.builtin
 				opts = params.opts
-				opts = vim.tbl_deep_extend("force", { cwd = require("utils.dir").root() }, opts or {})
+				opts = vim.tbl_deep_extend("force", {
+					cwd = require("utils.dir").root(),
+					fzf_opts = {
+						["--no-scrollbar"] = "",
+						["--color"] = "separator:cyan",
+						["--info"] = "right",
+						["--marker"] = "󰍎 ",
+						["--pointer"] = " ",
+						["--padding"] = "0,1",
+						["--margin"] = "0",
+					},
+				}, opts or {})
 				if builtin == "files" then
 					if vim.loop.fs_stat((opts.cwd or vim.uv.cwd()) .. "/.git") then
 						builtin = "git_files"
@@ -165,7 +183,6 @@ return {
 				input_prompt = " Grep For : ",
 				glob_flag = "--iglob",
 				glob_separator = "%s%-%-",
-				fzf_opts = fzf_opts,
 				git_icons = false,
 				grep_opts = table.concat({
 					"--binary-files=without-match",
@@ -193,7 +210,6 @@ return {
 
 			-- Setup find files
 			files = {
-				fzf_opts = fzf_opts,
 				prompt = " Files : ",
 				multiprocess = true,
 				git_icons = false,
@@ -238,25 +254,23 @@ return {
 			lsp = {
 				code_actions = {
 					prompt = " Code Action : ",
-					fzf_opts = fzf_opts,
 					winopts = { height = 0.3, width = 0.55, row = 0.45, preview = { hidden = "hidden" } },
 				},
-				finder = { prompt = " Lsp Finder : ", fzf_opts = fzf_opts },
-				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds, fzf_opts = fzf_opts },
+				finder = { prompt = " Lsp Finder : " },
+				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds },
 			},
-			args = { prompt = " Args : ", git_icons = false, fzf_opts = fzf_opts, files_only = true },
-			oldfiles = { prompt = " Old Files : ", git_icons = false, fzf_opts = fzf_opts },
-			buffers = { prompt = " Buffers : ", git_icons = false, fzf_opts = fzf_opts },
-			tabs = { winopts = no_preview_winopts, prompt = " Tabs : ", fzf_opts = fzf_opts },
-			lines = { winopts = no_preview_winopts, prompt = " Lines : ", fzf_opts = fzf_opts },
-			blines = { winopts = no_preview_winopts, prompt = " Buffer Lines : ", fzf_opts = fzf_opts },
-			keymaps = { winopts = no_preview_winopts, prompt = " Keymaps : ", fzf_opts = fzf_opts },
-			quickfix = { winopts = no_preview_winopts, prompt = " Quick Fix : ", fzf_opts = fzf_opts },
-			quickfix_stack = { prompt = " Quick Fix Stack : ", fzf_opts = fzf_opts },
+			args = { prompt = " Args : ", git_icons = false, files_only = true },
+			oldfiles = { prompt = " Old Files : ", git_icons = false },
+			buffers = { prompt = " Buffers : ", git_icons = false },
+			tabs = { winopts = no_preview_winopts, prompt = " Tabs : " },
+			lines = { winopts = no_preview_winopts, prompt = " Lines : " },
+			blines = { winopts = no_preview_winopts, prompt = " Buffer Lines : " },
+			keymaps = { winopts = no_preview_winopts, prompt = " Keymaps : " },
+			quickfix = { winopts = no_preview_winopts, prompt = " Quick Fix : " },
+			quickfix_stack = { prompt = " Quick Fix Stack : " },
 			diagnostics = {
 				winopts = no_preview_winopts,
 				prompt = " Diagnostics : ",
-				fzf_opts = fzf_opts,
 				signs = {
 					["Error"] = { text = icons.diagnostics.Error, texthl = "DiagnosticError" },
 					["Warn"] = { text = icons.diagnostics.Warn, texthl = "DiagnosticWarn" },
@@ -276,13 +290,11 @@ return {
 				},
 				branches = {
 					prompt = " Git Branches : ",
-					fzf_opts = fzf_opts,
 					cmd = "git branch --all --color",
 					preview = "git log --graph --pretty=oneline --abbrev-commit --color {1}",
 				},
 				bcommits = {
 					prompt = " Git Buffer Commit : ",
-					fzf_opts = fzf_opts,
 					cmd = "git log --pretty=oneline --abbrev-commit --color",
 					preview = "git show --pretty='%Cred%H%n%Cblue%an%n%Cgreen%s' --color {1}",
 				},
@@ -290,11 +302,9 @@ return {
 					prompt = "Commits❯ ",
 					cmd = "git log --pretty=oneline --abbrev-commit --color",
 					preview = "git show --pretty='%Cred%H%n%Cblue%an%n%Cgreen%s' --color {1}",
-					fzf_opts = fzf_opts,
 				},
 				status = {
 					prompt = " Git Status : ",
-					fzf_opts = fzf_opts,
 					cmd = "git status -su",
 					previewer = "git_diff",
 					file_icons = true,
@@ -303,7 +313,6 @@ return {
 				},
 				files = {
 					prompt = " Git Files : ",
-					fzf_opts = fzf_opts,
 					cmd = "git ls-files --exclude-standard",
 					multiprocess = true,
 					git_icons = false,

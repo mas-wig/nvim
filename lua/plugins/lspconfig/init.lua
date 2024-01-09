@@ -10,10 +10,10 @@ return {
 		"stevearc/conform.nvim",
 		event = { "BufWritePre" },
 		opts = {
-			format_on_save = { timeout_ms = 500, lsp_fallback = true },
+			format_on_save = { timeout_ms = 1000, lsp_fallback = true },
 			formatters_by_ft = {
-				lua = { "stylua" },
-				go = { "goimports" },
+				["lua"] = { "stylua" },
+				["go"] = { "goimports" },
 				["javascript"] = { "prettierd" },
 				["javascriptreact"] = { "prettierd" },
 				["typescript"] = { "prettierd" },
@@ -30,6 +30,10 @@ return {
 				["markdown.mdx"] = { "prettierd" },
 				["graphql"] = { "prettierd" },
 				["handlebars"] = { "prettierd" },
+				["cpp"] = { "clang-format" },
+				["c"] = { "clang-format" },
+				["sql"] = { "sqlfmt" },
+				["mysql"] = { "sqlfmt" },
 			},
 		},
 	},
@@ -38,11 +42,10 @@ return {
 		cmd = "Mason",
 		build = ":MasonUpdate",
 		opts = {
-            		max_concurrent_installers = 10,
+			max_concurrent_installers = 10,
 			PATH = "prepend",
 			ensure_installed = {
 				"clangd",
-				"stylua",
 				"lua-language-server",
 				"rust-analyzer",
 				"typescript-language-server",
@@ -74,8 +77,7 @@ return {
 				"prettierd",
 				"sqlfmt",
 				"goimports",
-				"goimports-reviser"
-
+				"goimports-reviser",
 			},
 		},
 		config = function(_, opts)
@@ -173,7 +175,18 @@ return {
 				})
 
 				local lang_servers, ft_servers =
-					{ lua = { "lua_ls" }, c = { "clangd" }, cpp = { "clangd" }, markdown = { "marksman" } }, {}
+					{
+						lua = { "lua_ls" },
+						c = { "clangd" },
+						cpp = { "clangd" },
+						markdown = { "marksman" },
+						rust = { "rust-analyzer" },
+						php = { "phpactor" },
+						solidity = { "nomicfoundation-solidity-language-server" },
+						html = { "html-lsp" },
+						css = { "css-lsp" },
+						sql = { "sqlls" },
+					}, {}
 
 				for langs, sname in pairs(lang_servers) do
 					ft_servers[langs] = sname
