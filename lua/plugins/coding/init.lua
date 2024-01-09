@@ -57,13 +57,21 @@ return {
 			vim.fn.sign_define("DapStopped", { text = icons.Stopped, texthl = "DiagnosticSignError" })
 			dap.listeners.after.event_initialized["dapui_config"] = function()
 				dapui.open({})
+				require("nvim-dap-virtual-text").refresh()
+			end
+			dap.listeners.after.disconnect["dapui_config"] = function()
+				require("dap.repl").close()
+				require("dapui").close()
+				require("nvim-dap-virtual-text").refresh()
 			end
 			dap.listeners.before.event_terminated["dapui_config"] = function(e)
 				vim.notify(string.format("program '%s' was terminated.", vim.fn.fnamemodify(e.config.program, ":t")), 2)
+				require("nvim-dap-virtual-text").refresh()
 				dapui.close({})
 			end
 			dap.listeners.before.event_exited["dapui_config"] = function()
 				dapui.close({})
+				require("nvim-dap-virtual-text").refresh()
 			end
 			dap.adapters = require("plugins.coding.adapter")
 			dap.configurations = require("plugins.coding.config")
