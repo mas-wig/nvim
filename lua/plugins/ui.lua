@@ -90,8 +90,10 @@ return {
 		end,
 		config = function()
 			local notify = require("notify")
+
 			local stages_util = require("notify.stages.util")
 			local Dir = stages_util.DIRECTION
+
 			local function anim(direction)
 				return {
 					function(state)
@@ -106,7 +108,7 @@ return {
 							height = state.message.height,
 							col = vim.opt.columns:get(),
 							row = next_row,
-							border = "single",
+							border = "rounded",
 							style = "minimal",
 						}
 					end,
@@ -161,17 +163,10 @@ return {
 			end
 			notify.setup({
 				timeout = 3000,
-				-- max_height = function()
-				-- 	return math.floor(vim.o.lines * 0.75)
-				-- end,
-				-- max_width = function()
-				-- 	return math.floor(vim.o.columns * 0.75)
-				-- end,
-				-- on_open = function(win)
-				-- 	vim.api.nvim_win_set_config(win, { zindex = 100 })
-				-- end,
+				on_open = function(win)
+					vim.api.nvim_win_set_config(win, { zindex = 100 })
+				end,
 				render = "wrapped-compact",
-				-- fps = 60,
 				stages = anim(Dir.TOP_DOWN),
 			})
 		end,
