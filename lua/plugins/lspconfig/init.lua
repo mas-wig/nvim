@@ -38,14 +38,44 @@ return {
 		cmd = "Mason",
 		build = ":MasonUpdate",
 		opts = {
+            		max_concurrent_installers = 10,
 			PATH = "prepend",
 			ensure_installed = {
 				"clangd",
 				"stylua",
 				"lua-language-server",
 				"rust-analyzer",
-				"codelldb",
 				"typescript-language-server",
+				"phpactor",
+				"nomicfoundation-solidity-language-server",
+				"solidity",
+				"htmx-lsp",
+				"templ",
+				"html-lsp",
+				"css-lsp",
+				"marksman",
+				"sqlls",
+
+				-- linter
+				"solhint",
+				"selene",
+				"phpcs",
+				"phpstan",
+				"php-cs-fixer",
+				"cpplint",
+				"vale",
+				"biome",
+				"eslint_d",
+				"golangci-lint",
+				"staticcheck",
+
+				"clang-format",
+				"stylua",
+				"prettierd",
+				"sqlfmt",
+				"goimports",
+				"goimports-reviser"
+
 			},
 		},
 		config = function(_, opts)
