@@ -80,7 +80,7 @@ return {
 			{ "<leader>fr", fzf("resume"), desc = "Find Resume" },
 
 			-- git
-			{ "<leader><leader>", fzf("git_files"), desc = "Find Git Files" },
+			{ "<leader><leader>", fzf("files"), desc = "Find Files" },
 			{ "<leader>hfs", fzf("git_status"), desc = "`git status`" },
 			{ "<leader>hfc", fzf("git_commits"), desc = "Git Commit Log (project)" },
 			{ "<leader>hfB", fzf("git_branches"), desc = "`git branches`" },
