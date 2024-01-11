@@ -44,24 +44,25 @@ end
 
 return {
 	on_attach = function(client, bufnr)
-		vim.lsp.handlers[method.textDocument_references] = function()
-			trouble("lsp_references")
+		for mthd, handler in pairs(handlers) do
+			local obj_name = mthd:match("/(%w*)$"):gsub("s$", "")
+			vim.lsp.handlers[mthd] = function(err, result, ctx, cfg)
+				if not result or vim.tbl_isempty(result) then
+					vim.notify("[LSP] no " .. obj_name .. " found")
+					return
+				end
+				if not vim.tbl_islist(result) then
+					result = { result }
+				end
+				if #result == 1 then
+					local enc = vim.lsp.get_client_by_id(ctx.client_id).offset_encoding
+					vim.lsp.util.jump_to_location(result[1], enc)
+					vim.notify("[LSP] found 1 " .. obj_name)
+					return
+				end
+				handler(err, result, ctx, cfg)
+			end
 		end
-		vim.lsp.handlers[method.textDocument_implementation] = function()
-			trouble("lsp_implementations")
-		end
-		vim.lsp.handlers[method.textDocument_definition] = function()
-			trouble("lsp_definitions")
-		end
-		vim.lsp.handlers[method.textDocument_typeDefinition] = function()
-			trouble("lsp_type_definitions")
-		end
-		vim.lsp.handlers[method.callHierarchy_incomingCalls] = fzf.lsp_incoming_calls
-		vim.lsp.handlers[method.callHierarchy_outgoingCalls] = fzf.lsp_outgoing_calls
-		vim.lsp.handlers[method.textDocument_codeAction] = fzf.code_actions
-		vim.lsp.handlers[method.textDocument_declaration] = fzf.declarations
-		vim.lsp.handlers[method.textDocument_documentSymbol] = fzf.lsp_document_symbols
-		vim.lsp.handlers[method.workspace_symbol] = fzf.lsp_live_workspace_symbols
 
 		local renameHandler = vim.lsp.handlers[method.textDocument_rename]
 		vim.lsp.handlers[method.textDocument_rename] = function(err, result, ctx, config)
