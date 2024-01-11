@@ -1,7 +1,6 @@
 return {
 	"ibhagwan/fzf-lua",
 	init = function()
-		---@diagnostic disable-next-line: duplicate-set-field
 		vim.ui.select = function(...)
 			require("fzf-lua").register_ui_select(function(_, items)
 				local min_h, max_h = 0.15, 0.70

@@ -1,7 +1,0 @@
-map("n","<leader>ga",vim.lsp.codelens.run,{desc = "Run CodeLens",buffer= bufnr})
-map("n","<leader>gw",vim.lsp.buf.add_workspace_folder,{desc = "Add Folder to Workspace",buffer= bufnr})
-map("n","<leader>gW",vim.lsp.buf.remove_workspace_folder,{desc = "Remove Folder from Workspace",buffer= bufnr})
-map("n","<leader>gl",vim.lsp.buf.list_workspace_folders,{desc = "List Workspace Folder",buffer= bufnr})
-map("n","K",vim.lsp.buf.hover,{desc = "Hover Document",buffer= bufnr})
-map("n","<leader>gn",vim.lsp.buf.rename,{desc = "Rename",buffer= bufnr})
-map("n","<C-k>",vim.lsp.buf.signature_help,{desc = "Signature Help",buffer= bufnr})
