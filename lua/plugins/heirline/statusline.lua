@@ -85,7 +85,7 @@ return {
 				provider = function(self)
 					return fmt(" %s %s ", "", (self.status_dict.head == "" and "main" or self.status_dict.head))
 				end,
-				hl = { fg = colors.blue2, bg = colors.fg_gutter },
+				hl = { fg = colors.blue2, bg = colors.fg_gutter, bold = true },
 			},
 			space,
 			{

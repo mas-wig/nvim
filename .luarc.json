@@ -1,0 +1,10 @@
+{
+    "diagnostics.disable": [
+        "undefined-field",
+        "undefined-global",
+        "cast-local-type"
+    ],
+    "diagnostics.globals": [
+        "vim"
+    ]
+}

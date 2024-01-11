@@ -29,6 +29,11 @@ return {
 			use_diagnostic_signs = true,
 		},
 		keys = {
+			-- { "<leader>gr", "<cmd>Trouble lsp_references<cr>", desc = "References" },
+			-- { "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "Definition" },
+			-- { "gD", "<cmd>Trouble lsp_type_definitions<cr>", desc = "Type Definitions" },
+			-- { "<leader>ge", "<cmd>Trouble lsp_implementations<cr>", desc = "Implementation" },
+
 			{ "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
 			{ "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
 			{ "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
@@ -274,6 +279,7 @@ return {
 
 	{
 		"ThePrimeagen/harpoon",
+		dependencies = { "nvim-lua/plenary.nvim" },
 		branch = "harpoon2",
 		config = function()
 			local harpoon = require("harpoon")
@@ -281,7 +287,7 @@ return {
 			harpoon:setup({
 				settings = {
 					save_on_toggle = true,
-					sync_on_ui_close = true,
+					-- sync_on_ui_close = true,
 					key = function()
 						return vim.uv.cwd() --[[@as string]]
 					end,
@@ -290,10 +296,7 @@ return {
 					automated = true,
 					encode = false,
 					prepopulate = function(cb)
-						vim.system({
-							"tmux",
-							"list-sessions",
-						}, { text = true }, function(out)
+						vim.system({ "tmux", "list-sessions" }, { text = true }, function(out)
 							if out.code ~= 0 then
 								return {}
 							end
@@ -311,45 +314,7 @@ return {
 					end,
 					remove = function(list_item, _)
 						local sessionName = string.match(list_item.value, "([^:]+)")
-						vim.system({ "tmux", "kill-session", "-t", sessionName }, {}, function() end)
-					end,
-				},
-				terminals = {
-					automated = true,
-					encode = false,
-					prepopulate = function()
-						local bufs = vim.api.nvim_list_bufs()
-						return vim.iter(bufs)
-							:filter(function(buf)
-								return vim.bo[buf].buftype == "terminal"
-							end)
-							:map(function(buf)
-								return {
-									value = vim.api.nvim_buf_get_name(buf),
-									context = {
-										bufnr = buf,
-									},
-								}
-							end)
-							:totable()
-					end,
-					remove = function(list_item, _)
-						if vim.api.nvim_buf_is_valid(list_item.context.bufnr) then
-							require("mini.bufremove").delete(list_item.context.bufnr, true)
-						end
-					end,
-					select = function(list_item, _, _)
-						local wins = vim.api.nvim_tabpage_list_wins(0)
-						-- jump to existing window containing the buffer
-						for _, win in ipairs(wins) do
-							local buf = vim.api.nvim_win_get_buf(win)
-							if buf == list_item.context.bufnr then
-								vim.api.nvim_set_current_win(win)
-								return
-							end
-						end
-						-- switch to the buffer if no window was found
-						vim.api.nvim_set_current_buf(list_item.context.bufnr)
+						return vim.system({ "tmux", "kill-session", "-t", sessionName }, {}, function() end)
 					end,
 				},
 				default = {},
@@ -392,7 +357,6 @@ return {
 					local win = cx.win_id
 					vim.wo[win].cursorline = true
 					vim.wo[win].signcolumn = "no"
-
 					vim.keymap.set("n", "<C-v>", function()
 						harpoon.ui:select_menu_item({ vsplit = true })
 					end, { buffer = cx.bufnr })
@@ -458,30 +422,6 @@ return {
 					require("mini.bufremove").delete(0, true)
 				end,
 				desc = "Delete Buffer (Force)",
-			},
-		},
-	},
-
-	{
-		"m4xshen/hardtime.nvim",
-		event = "BufRead",
-		opts = {
-			hint = true,
-			notification = false,
-			disabled_filetypes = {
-				"qf",
-				"netrw",
-				"lazy",
-				"mason",
-				"oil",
-				"prompt",
-				"Trouble",
-				"toggleterm",
-				"dbout",
-				"neotest--summary",
-				"dbui",
-				"oil_preview",
-				"help",
 			},
 		},
 	},

@@ -95,7 +95,7 @@ return {
 				end
 
 				local next, nexti = nil, nil
-				local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+				local crow, ccol = table.unpack(vim.api.nvim_win_get_cursor(0))
 				local crange = { start = { line = crow - 1, character = ccol } }
 
 				for i, ref in ipairs(refs) do

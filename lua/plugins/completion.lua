@@ -83,12 +83,11 @@ return {
 				enabled = function()
 					local context = require("cmp.config.context")
 					if
-						vim.api.nvim_get_option_value("buftype", { buf = vim.api.nvim_get_current_buf() })
-							== "prompt"
+						vim.tbl_contains({ "prompt" }, vim.bo.buftype)
+						or vim.tbl_contains({ "oil" }, vim.bo.filetype)
 						or vim.fn.reg_recording() ~= ""
 						or vim.fn.reg_executing() ~= ""
 						or context.in_treesitter_capture("comment")
-						or vim.bo.ft == "oil"
 					then
 						return false
 					end
@@ -156,13 +155,12 @@ return {
 				},
 				sources = cmp.config.sources({
 					{ name = "luasnip", max_item_count = 4, priority = 600 },
-
 					{
 						name = "async_path",
 						priority = 1000,
 						option = {
 							get_cwd = function()
-								return require("utils.dir").cwd()
+								return require("utils.dir").root()
 							end,
 						},
 					},
@@ -201,12 +199,11 @@ return {
 							vim_item.word = path_escaped
 							vim_item.abbr = path_escaped
 						end
-
 						-- Use special icons for file / directory completions
 						if vim_item.kind == "File" or vim_item.kind == "Folder" or complpath then
 							if vim_item.kind == "Folder" then -- Directories
 								vim_item.kind = icons.Folder
-								vim_item.kind_hl_group = "CmpItemKindFolder"
+								vim_item.kind_hl_group = "Directory"
 							else -- Files
 								local icon, icon_hl = require("nvim-web-devicons").get_icon(
 									vim.fs.basename(vim_item.word),

@@ -72,9 +72,26 @@ vim.opt.visualbell = true
 vim.opt.cursorcolumn = true
 vim.opt.cursorlineopt = "both"
 vim.opt.diffopt:append("algorithm:histogram")
-vim.opt.wildignore:append(
-	"*.png,*.jpg,*.jpeg,*.gif,*.wav,*.aiff,*.dll,*.pdb,*.mdb,*.so,*.swp,*.zip,*.gz,*.bz2,*.meta,*.svg,*.cache,*/.git/*"
-)
+vim.opt.wildignore = {
+	"*.png",
+	"*.jpg",
+	"*.jpeg",
+	"*.gif",
+	"*.wav",
+	"*.aiff",
+	"*.dll",
+	"*.pdb",
+	"*.mdb",
+	"*.so",
+	"*.swp",
+	"*.zip",
+	"*.gz",
+	"*.bz2",
+	"*.meta",
+	"*.svg",
+	"*.cache",
+	"*/.git/*",
+}
 
 if vim.fn.executable("rg") == 1 then
 	vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
@@ -96,7 +113,7 @@ vim.wo.colorcolumn = "80,120"
 vim.env.PATH = string.format(
 	"%s/mason/bin/%s%s",
 	vim.fn.stdpath("data"),
-	(vim.loop.os_uname().sysname == "Windows_NT" and ";" or ":"),
+	(vim.uv.os_uname().sysname == "Windows_NT" and ";" or ":"),
 	vim.env.PATH
 )
 

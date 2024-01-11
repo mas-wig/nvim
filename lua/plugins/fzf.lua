@@ -28,34 +28,7 @@ return {
 		end
 	end,
 	keys = function()
-		local function fzf(builtin, opts)
-			local params = { builtin = builtin, opts = opts }
-			return function()
-				builtin = params.builtin
-				opts = params.opts
-				opts = vim.tbl_deep_extend("force", {
-					cwd = require("utils.dir").root(),
-					fzf_opts = {
-						["--no-scrollbar"] = "",
-						["--color"] = "separator:cyan",
-						["--info"] = "right",
-						["--marker"] = "󰍎 ",
-						["--pointer"] = " ",
-						["--padding"] = "0,1",
-						["--margin"] = "0",
-					},
-				}, opts or {})
-				if builtin == "files" then
-					if vim.loop.fs_stat((opts.cwd or vim.uv.cwd()) .. "/.git") then
-						builtin = "git_files"
-					else
-						builtin = "files"
-					end
-				end
-				require("fzf-lua")[builtin](opts)
-			end
-		end
-
+		local fzf = require("utils").fzf
 		return {
 			{ "<leader>fB", fzf("builtin"), desc = "Find Builtin" },
 			{ "<leader>fb", fzf("buffers"), desc = "Find Buffers" },
@@ -89,14 +62,15 @@ return {
 			{ "<leader>hfS", fzf("git_stash"), desc = "`git stash`" },
 
 			-- Grep
-			{ "<leader>ss", fzf("grep"), desc = "Pattern with `grep` or `rg`" },
+			{ "<leader>/", fzf("grep"), desc = "Grep with Pattern" },
+			{ "<leader>ss", fzf("grep"), desc = "Grep with Pattern" },
 			{ "<leader>sS", fzf("grep_last"), desc = "Run Last Grep" },
-			{ "<leader>sB", fzf("grep_curbuf"), desc = "Grep Current Buffer" },
-			{ "<leader>sb", fzf("lgrep_curbuf"), desc = "Live Grep current buffer" },
-			{ "<leader>sw", fzf("live_grep"), desc = "Live Grep Current Project" },
-			{ "<leader>sW", fzf("live_grep_resume"), desc = "Live Grep last search" },
-			{ "<leader>sn", fzf("live_grep_native"), desc = "Native of live_grep" },
-			{ "<leader>sg", fzf("live_grep_glob"), desc = "Live Grep With rg --glob" },
+			{ "<leader>sB", fzf("grep_curbuf"), desc = "Grep Current Buf" },
+			{ "<leader>sb", fzf("lgrep_curbuf"), desc = "Lgrep Current Buf" },
+			{ "<leader>sw", fzf("live_grep"), desc = "Lgrep Root Dir" },
+			{ "<leader>sW", fzf("live_grep_resume"), desc = "Lgrep last search" },
+			{ "<leader>sn", fzf("live_grep_native"), desc = "Native of Lgrep" },
+			{ "<leader>sg", fzf("live_grep_glob"), desc = "Lgrep with rg --glob" },
 
 			-- dap
 			{ "<leader>dsc", fzf("dap_commands"), desc = "Command" },
@@ -104,12 +78,24 @@ return {
 			{ "<leader>dsb", fzf("dap_breakpoints"), desc = "Breakpoint" },
 			{ "<leader>dsv", fzf("dap_variables"), desc = "Active Session Variables" },
 			{ "<leader>dsf", fzf("dap_frames"), desc = "Frames" },
+
+			-- LSP
+			-- { "<leader>gd", fzf("lsp_declarations"), desc = "Declaration" },
+			-- { "<leader>gs", fzf("lsp_document_symbols"), desc = "Document Symbols" },
+			-- { "<leader>gS", fzf("lsp_workspace_symbols"), desc = "Workspace Symbols" },
+			-- { "<leader>gL", fzf("lsp_live_workspace_symbols"), desc = "Live Workspace Symbols" },
+			-- { "<leader>gc", fzf("lsp_code_actions"), desc = "Code Action" },
+			-- { "<leader>gi", fzf("lsp_incoming_calls"), desc = "Incoming Calls" },
+			-- { "<leader>go", fzf("lsp_outgoing_calls"), desc = "Outgoing Calls" },
+			-- { "<leader>gf", fzf("lsp_finder"), desc = "Lsp Finder" },
+			-- { "<leader>gx", fzf("diagnostics_document"), desc = "Current Bufer Diagnostics" },
+			-- { "<leader>gX", fzf("diagnostics_workspace"), desc = "Workspace Diagnostics" },
 		}
 	end,
 	config = function()
 		local fmt, icons, fzf = string.format, require("utils.icons"), require("fzf-lua")
-
 		local ignore_folder = table.concat({
+			".git",
 			"node_modules",
 			"vendor",
 			"debug",
@@ -152,7 +138,7 @@ return {
 					syntax = true,
 					syntax_limit_l = 0,
 					syntax_limit_b = 1024 * 1024,
-					extensions = { ["png"] = { "viu" }, ["jpg"] = { "viu" } },
+					extensions = { ["png"] = { "feh" }, ["jpg"] = { "feh" } },
 				},
 			},
 			winopts = {
@@ -201,8 +187,6 @@ return {
 					"--no-heading",
 					"--color=always",
 					"-g",
-					"'!.git'",
-					"-g",
 					fmt("'!{%s}/'", ignore_folder),
 					"-e",
 				}, " "),
@@ -231,8 +215,6 @@ return {
 					"--no-ignore",
 					"--follow",
 					"--exclude",
-					"'.git'",
-					"--exclude",
 					fmt("'{%s}/'", ignore_folder),
 				}, " "),
 				rg_opts = table.concat({
@@ -244,8 +226,6 @@ return {
 					"--max-columns=512",
 					"--hidden",
 					"--no-ignore",
-					"-g",
-					"'!.git'",
 					"-g",
 					fmt("'!{%s}/'", ignore_folder),
 				}, " "),

@@ -1,7 +1,4 @@
 return {
-	marksman = {
-		filetypes = { "markdown", "markdown.mdx" },
-	},
 	lua_ls = {
 		on_init = function(client)
 			local path = client.workspace_folders[1].name

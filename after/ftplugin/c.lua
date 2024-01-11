@@ -3,7 +3,7 @@ vim.opt_local.shiftwidth = 4
 vim.opt_local.tabstop = 4
 vim.opt_local.softtabstop = 4
 vim.opt_local.commentstring = "// %s"
-vim.opt_local.path:append("/usr/include/**,/usr/local/include/**")
+vim.opt_local.path = { "/usr/include/**", "/usr/local/include/**" }
 
 local map = vim.keymap.set
 if vim.lsp.get_clients({ name = "clangd" }) then

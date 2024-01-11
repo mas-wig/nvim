@@ -181,8 +181,8 @@ return {
 						cpp = { "clangd" },
 						markdown = { "marksman" },
 						rust = { "rust-analyzer" },
+						solidity = { "solidity_ls_nomicfoundation" },
 						php = { "phpactor" },
-						solidity = { "nomicfoundation-solidity-language-server" },
 						html = { "html-lsp" },
 						css = { "css-lsp" },
 						sql = { "sqlls" },
@@ -234,23 +234,19 @@ return {
 					return register_capability(err, res, ctx)
 				end
 
-				local show_handler = vim.diagnostic.handlers.virtual_text.show
-				local hide_handler = vim.diagnostic.handlers.virtual_text.hide
+				local hide = vim.diagnostic.handlers.virtual_text.hide
+				local show = vim.diagnostic.handlers.virtual_text.show
 				vim.diagnostic.handlers.virtual_text = {
 					show = function(ns, bufnr, diagnostics, opts)
 						table.sort(diagnostics, function(diag1, diag2)
 							return diag1.severity > diag2.severity
 						end)
-						return show_handler(ns, bufnr, diagnostics, opts)
+						return show(ns, bufnr, diagnostics, opts)
 					end,
-					hide = hide_handler,
+					hide = hide,
 				}
 
 				local diagIcons = require("utils.icons").diagnostics
-				for name, icon in pairs(diagIcons) do
-					name = "DiagnosticSign" .. name
-					vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
-				end
 				vim.diagnostic.config({
 					underline = true,
 					update_in_insert = false,

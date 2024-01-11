@@ -106,63 +106,68 @@ return {
 	},
 	{
 		"nvim-neotest/neotest",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"antoinemadec/FixCursorHold.nvim",
-			{ "nvim-neotest/neotest-go", ft = "go" },
-			{ "llllvvuu/neotest-foundry", ft = "solidity" },
-		},
-		opts = {
-			adapters = {
-				["neotest-go"] = { experimental = { test_table = true }, args = { "-count=1", "-timeout=60s" } },
-				["neotest-foundry"] = {
-					foundryCommand = "forge test",
-					foundryConfig = nil,
-					env = {}, -- table | function
-					cwd = function()
-						return require("utils.dir").cwd()
-					end,
-					filterDir = function(name)
-						local excludedDirs = { "node_modules", "cache", "out", "artifacts", "docs", "doc" }
-						return not excludedDirs[name]
+		dependencies = { "antoinemadec/FixCursorHold.nvim", "nvim-neotest/neotest-go", "llllvvuu/neotest-foundry" },
+		config = function()
+			require("neotest").setup({
+				adapters = {
+					require("neotest-go")({
+						experimental = { test_table = true },
+						args = { "-count=1", "-timeout=60s" },
+					}),
+					require("neotest-foundry")({
+						foundryCommand = "forge test",
+						foundryConfig = nil,
+						env = {}, -- table | function
+						cwd = function()
+							return require("utils.dir").cwd()
+						end,
+						filterDir = function(name)
+							return not vim.tbl_contains(
+								{ "node_modules", "cache", "out", "artifacts", "docs", "doc" },
+								name
+							)
+						end,
+					}),
+				},
+				default_strategy = "integrated",
+				status = { enabled = true, signs = true, virtual_text = true },
+				icons = {
+					failed = " ",
+					passed = " ",
+					running = " ",
+					skipped = " ",
+					unknown = " ",
+					watching = "󰈈 ",
+				},
+				run = { enabled = true },
+				running = { concurrent = true },
+				state = { enabled = true },
+				output = { open_on_run = true },
+				quickfix = {
+					open = function()
+						if require("lazy.core.config").spec.plugins["trouble.nvim"] ~= nil then
+							vim.cmd("Trouble quickfix")
+						else
+							vim.cmd("copen")
+						end
 					end,
 				},
-			},
-			status = { enabled = true, signs = true, virtual_text = true },
-			-- floating = { border = "rounded", max_height = 0.8, max_width = 0.9 },
-			icons = {
-				failed = " ",
-				passed = " ",
-				running = " ",
-				skipped = " ",
-				unknown = " ",
-				watching = "󰈈 ",
-			},
-			output = { open_on_run = true },
-			quickfix = {
-				open = function()
-					if require("lazy.core.config").spec.plugins["trouble.nvim"] ~= nil then
-						vim.cmd("Trouble quickfix")
-					else
-						vim.cmd("copen")
-					end
-				end,
-			},
-		},
+			})
+		end,
 		keys = function()
 			local n = require("neotest")
 			return {
             -- stylua: ignore start
-			{ "<leader>tF", function() n.run.run({ vim.fn.expand("%"), strategy = "dap" }) end, desc = "Debug File" },
-			{ "<leader>tL", function() n.run.run_last({ strategy = "dap" }) end, desc = "Debug Last" },
-			{ "<leader>ta", function() n.run.attach() end, desc = "Attach" },
-			{ "<leader>tf", function() n.run.run(vim.fn.expand("%")) end, desc = "File" },
-			{ "<leader>tl", function() n.run.run_last() end, desc = "Last" },
-			{ "<leader>tn", function() n.run.run() end, desc = "Nearest" },
+			{ "<leader>tF", function() n.run.run({ vim.fn.expand("%"), strategy = "dap" }) end, desc = "Test Debug File" },
+			{ "<leader>tL", function() n.run.run_last({ strategy = "dap" }) end, desc = "Debug Last Test" },
+			{ "<leader>ta", function() n.run.attach() end, desc = "Test Attach" },
+			{ "<leader>tf", function() n.run.run(vim.fn.expand("%")) end, desc = "Test File" },
+			{ "<leader>tl", function() n.run.run_last() end, desc = "Run Last" },
+			{ "<leader>tn", function() n.run.run() end, desc = "Nearest Test" },
 			{ "<leader>tN", function() n.run.run({ strategy = "dap" }) end, desc = "Debug Nearest" },
-			{ "<leader>to", function() n.output.open({ enter = true }) end, desc = "Output" },
-			{ "<leader>tx", function() n.run.stop() end, desc = "Stop" },
-			{ "<leader>ts", function() n.summary.toggle() end, desc = "Summary" },
+			{ "<leader>to", function() n.output_panel.toggle() end, desc = "Output Panel" },
+			{ "<leader>tx", function() n.run.stop() end, desc = "Test Stop" },
+			{ "<leader>ts", function() n.summary.toggle() end, desc = "Test Summary" },
 				-- stylua: ignore end
 			}
 		end,
@@ -193,7 +198,7 @@ return {
 			end
 			lint.linters_by_ft = opts.linters_by_ft
 			function M.debounce(ms, fn)
-				local timer = vim.loop.new_timer()
+				local timer = vim.uv.new_timer()
 				return function(...)
 					local argv = { ... }
 					timer:start(ms, 0, function()
@@ -226,7 +231,7 @@ return {
 					lint.try_lint(names)
 				end
 			end
-			vim.keymap.set("n", "<C-l>", function()
+			vim.keymap.set("n", "<A-l>", function()
 				M.debounce(100, M.lint)
 			end, { desc = "Lint this files", buffer = vim.api.nvim_get_current_buf() })
 		end,

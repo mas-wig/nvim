@@ -39,4 +39,32 @@ function M.ts_folds(info)
 	end
 end
 
+function M.fzf(builtin, opts)
+	local params = { builtin = builtin, opts = opts }
+	return function()
+		builtin = params.builtin
+		opts = params.opts
+		opts = vim.tbl_deep_extend("force", {
+			cwd = require("utils.dir").root(),
+			fzf_opts = {
+				["--no-scrollbar"] = "",
+				["--color"] = "separator:cyan",
+				["--info"] = "right",
+				["--marker"] = "󰍎 ",
+				["--pointer"] = " ",
+				["--padding"] = "0,1",
+				["--margin"] = "0",
+			},
+		}, opts or {})
+		if builtin == "files" then
+			if vim.uv.fs_stat(string.format("%s/.git", (opts.cwd or vim.uv.cwd()))) then
+				builtin = "git_files"
+			else
+				builtin = "files"
+			end
+		end
+		require("fzf-lua")[builtin](opts)
+	end
+end
+
 return M

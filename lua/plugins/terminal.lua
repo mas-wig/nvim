@@ -4,6 +4,7 @@ return {
 		cmd = { "ToggleTerm", "ToggleTermToggleAll", "TermExec", "TermSelect", "ToggleTermSetName" },
 		keys = {
 			{ "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Terminal Horizontal" },
+			{ "<C-/>", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Terminal Horizontal" },
 			{ "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Terminal Vertical" },
 			{ "<leader>tt", "<cmd>ToggleTerm direction=float<cr>", desc = "Terminal Float" },
 			{

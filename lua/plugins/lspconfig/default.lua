@@ -20,6 +20,28 @@ local function goto_diag(direction, level)
 	end
 end
 
+-- local handlers = {
+-- 	[method.callHierarchy_incomingCalls] = vim.lsp.handlers[method.callHierarchy_incomingCalls],
+-- 	[method.callHierarchy_outgoingCalls] = vim.lsp.handlers[method.callHierarchy_outgoingCalls],
+-- 	[method.textDocument_codeAction] = vim.lsp.handlers[method.textDocument_codeAction],
+-- 	[method.textDocument_codeLens] = vim.lsp.handlers[method.textDocument_codeLens],
+-- 	[method.textDocument_declaration] = vim.lsp.handlers[method.textDocument_declaration],
+-- 	[method.textDocument_definition] = vim.lsp.handlers[method.textDocument_definition],
+-- 	[method.textDocument_diagnostic] = vim.lsp.handlers[method.textDocument_diagnostic],
+-- 	[method.textDocument_documentHighlight] = vim.lsp.handlers[method.textDocument_documentHighlight],
+-- 	[method.textDocument_documentSymbol] = vim.lsp.handlers[method.textDocument_documentSymbol],
+-- 	[method.textDocument_hover] = vim.lsp.handlers[method.textDocument_hover],
+-- 	[method.textDocument_implementation] = vim.lsp.handlers[method.textDocument_implementation],
+-- 	[method.textDocument_inlayHint] = vim.lsp.handlers[method.textDocument_inlayHint],
+-- 	[method.textDocument_references] = vim.lsp.handlers[method.textDocument_references],
+-- 	[method.textDocument_rename] = vim.lsp.handlers[method.textDocument_rename],
+-- 	[method.textDocument_signatureHelp] = vim.lsp.handlers[method.textDocument_signatureHelp],
+-- 	[method.textDocument_typeDefinition] = vim.lsp.handlers[method.textDocument_typeDefinition],
+-- 	[method.workspace_symbol] = vim.lsp.handlers[method.workspace_symbol],
+-- 	[method.workspace_diagnostic] = vim.lsp.handlers[method.workspace_diagnostic],
+-- 	[method.workspace_workspaceFolders] = vim.lsp.handlers[method.workspace_workspaceFolders],
+-- }
+
 return {
 	on_attach = function(client, bufnr)
 		vim.lsp.handlers[method.textDocument_references] = function()
@@ -203,7 +225,7 @@ return {
 			if client.supports_method(method.textDocument_codeLens) then
 				vim.lsp.codelens.run()
 			else
-				return vim.notify_once(fmt("Method [textDocument/codeLent] not\n supported!"), 2)
+				return vim.notify_once(fmt("Method [textDocument/codeLens] not\n supported!"), 2)
 			end
 		end, { desc = "Lsp Run codelens", buffer = bufnr })
 
