@@ -12,8 +12,19 @@ return {
 		config = function()
 			local luasnip = require("luasnip")
 			local t = require("luasnip.util.types")
-			local virtual_text = { unvisited = { virt_text = { { "|", "Conceal" } } } }
-			luasnip.setup({ ext_opts = { [t.insertNode] = virtual_text, [t.exitNode] = virtual_text } })
+			luasnip.setup({
+				keep_roots = true,
+				link_roots = false,
+				link_children = true,
+				region_check_events = "CursorMoved,CursorMovedI",
+				delete_check_events = "TextChanged,TextChangedI",
+				store_selection_keys = "<Tab>",
+				ext_opts = {
+					[t.choiceNode] = { active = { virt_text = { { "│", "NeoTreeTabActive" } } } },
+					[t.insertNode] = { unvisited = { virt_text = { { "│", "NonText" } }, virt_text_pos = "inline" } },
+					[t.exitNode] = { unvisited = { virt_text = { { "│", "NonText" } }, virt_text_pos = "inline" } },
+				},
+			})
 			require("luasnip.loaders.from_vscode").lazy_load()
 			vim.api.nvim_create_autocmd("ModeChanged", {
 				group = vim.api.nvim_create_augroup("mariasolos/unlink_snippet", { clear = true }),
@@ -110,13 +121,13 @@ return {
 						scrollbar = false,
 						winhighlight = "CmpMenu:CmpMenu,FloatBorder:Comment,CursorLine:PmenuSel",
 						side_padding = 1,
-						border = "rounded",
+						border = vim.g.border,
 					},
 					documentation = {
 						winhighlight = "CmpMenu:CmpMenu,FloatBorder:Comment,CursorLine:PmenuSel",
-						max_width = math.floor(vim.o.columns / 2),
-						max_height = math.floor(vim.o.lines / 3),
-						border = "rounded",
+						max_width = math.max(15, math.ceil(vim.go.columns * 0.41)),
+						max_height = math.max(10, math.ceil(vim.go.lines * 0.4)),
+						border = vim.g.border,
 					},
 				},
 				mapping = {
@@ -142,8 +153,8 @@ return {
 					end, { "i", "s", "c" }),
 					["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
 					["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-					["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "n", "i" }),
-					["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "n", "i" }),
+					["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i" }),
+					["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i" }),
 					["<C-Space>"] = cmp.mapping.complete(),
 					["<C-e>"] = cmp.mapping.abort(),
 					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
@@ -237,7 +248,7 @@ return {
 								vim_item[field] = fmt("%-" .. min_width .. "s", field_str)
 							end
 						end
-						clamp("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.3)))
+						clamp("abbr", vim.go.pw, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.24)))
 						clamp("menu", 0, math.max(10, math.ceil(vim.api.nvim_win_get_width(0) * 0.10)))
 						return vim_item
 					end,

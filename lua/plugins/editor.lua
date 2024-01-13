@@ -29,11 +29,6 @@ return {
 			use_diagnostic_signs = true,
 		},
 		keys = {
-			-- { "<leader>gr", "<cmd>Trouble lsp_references<cr>", desc = "References" },
-			-- { "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "Definition" },
-			-- { "gD", "<cmd>Trouble lsp_type_definitions<cr>", desc = "Type Definitions" },
-			-- { "<leader>ge", "<cmd>Trouble lsp_implementations<cr>", desc = "Implementation" },
-
 			{ "<leader>xx", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics (Trouble)" },
 			{ "<leader>xX", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics (Trouble)" },
 			{ "<leader>xL", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
@@ -71,7 +66,7 @@ return {
 	{
 		"folke/todo-comments.nvim",
 		cmd = { "TodoTrouble", "TodoTelescope" },
-		event = "BufReadPost",
+		event = "BufRead",
 		config = true,
 		keys = {
             -- stylua: ignore start

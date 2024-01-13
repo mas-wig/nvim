@@ -1,9 +1,0 @@
-after
-init.lua
-input.txt
-lazy-lock.json
-LICENSE
-lua
-README.md
-selene.toml
-tmp.text

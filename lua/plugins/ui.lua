@@ -24,11 +24,11 @@ return {
 					header = vim.split(logo, "\n"),
 					center = {
                         -- stylua: ignore start
-						{ action = "FzfLua files", desc = " Find Files", icon = " ", key = "f", },
-						{ action = "FzfLua oldfiles", desc = " Find Old Files", icon = "󰼨 ", key = "p", },
+						{ action = "lua require('fzf-lua').files()", desc = " Find Files", icon = " ", key = "f", },
+						{ action = "lua require('fzf-lua').resume()", desc = " Resume Files", icon = "󰼨 ", key = "p", },
 						{ action = "Oil", desc = " File Explorer", icon = "󱇧 ", key = "o", },
 						{ action = "ToggleTerm", desc = " Open Terminal", icon = " ", key = "t", },
-						{ action = "lua  require'harpoon'.ui:toggle_quick_menu(require'harpoon':list())", desc = " Marks", icon = "󱪾 ", key = "m", },
+						{ action = "lua require'harpoon'.ui:toggle_quick_menu(require'harpoon':list())", desc = " Marks", icon = "󱪾 ", key = "m", },
 						{ action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l", },
 						{ action = "qa", desc = " Quit", icon = " ", key = "q", },
 						-- stylua: ignore start
@@ -174,47 +174,77 @@ return {
 	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
-		opts = {
-			cmdline = { view = "cmdline" },
-			popupmenu = { enabled = false },
-			lsp = {
-				signature = { enabled = true, auto_open = { enabled = false } }, -- karana gua pake lsp signature
-				override = {
-					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-					["vim.lsp.util.stylize_markdown"] = true,
-					["cmp.entry.get_documentation"] = true,
-				},
-			},
-			routes = {
-				{
-					filter = {
-						event = "msg_show",
-						any = {
-							{ find = "%d+L, %d+B" },
-							{ find = "; after #%d+" },
-							{ find = "; before #%d+" },
+		config = function()
+			require("noice").setup({
+				cmdline = { view = "cmdline" },
+				popupmenu = { enabled = false },
+				lsp = {
+					signature = {
+						enabled = true,
+						auto_open = { enabled = true, trigger = false, luasnip = false, throttle = 50 },
+					},
+					override = {
+						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+						["vim.lsp.util.stylize_markdown"] = true,
+						["cmp.entry.get_documentation"] = true,
+					},
+					documentation = {
+						view = "hover",
+						opts = {
+							lang = "markdown",
+							replace = true,
+							render = "plain",
+							format = { "{message}" },
+							win_options = { concealcursor = "nc", conceallevel = 3 },
 						},
 					},
-					view = "mini",
 				},
-			},
-			views = {
-				popup = {
-					border = { style = vim.g.border },
-					size = { max_width = math.floor(vim.o.columns / 2), max_height = math.floor(vim.o.lines / 3) },
+				routes = {
+					{
+						filter = {
+							event = "msg_show",
+							any = {
+								{ find = "%d+L, %d+B" },
+								{ find = "; after #%d+" },
+								{ find = "; before #%d+" },
+							},
+						},
+						view = "mini",
+					},
 				},
-				hover = {
-					border = { style = vim.g.border },
-					size = { max_width = math.floor(vim.o.columns / 2), max_height = math.floor(vim.o.lines / 3) },
+				views = {
+					popup = {
+						border = { style = vim.g.border },
+						wrap = true,
+						size = { max_width = math.floor(vim.o.columns / 2), max_height = math.floor(vim.o.lines / 3) },
+					},
+					hover = {
+						border = { style = vim.g.border },
+						wrap = true,
+						size = {
+							max_width = math.max(15, math.ceil(vim.go.columns * 0.41)),
+							max_height = math.max(10, math.ceil(vim.go.lines * 0.4)),
+						},
+					},
 				},
-			},
-			presets = {
-				bottom_search = true,
-				command_palette = true,
-				long_message_to_split = true,
-				inc_rename = false,
-			},
-		},
+				presets = {
+					bottom_search = true,
+					command_palette = true,
+					long_message_to_split = true,
+					inc_rename = false,
+				},
+			})
+			vim.keymap.set({ "n", "s" }, "<c-f>", function()
+				if not require("noice.lsp").scroll(4) then
+					return "<c-f>"
+				end
+			end, { silent = true, expr = true })
+			vim.keymap.set({ "n", "s" }, "<c-b>", function()
+				if not require("noice.lsp").scroll(-4) then
+					return "<c-b>"
+				end
+			end, { silent = true, expr = true })
+		end,
 	},
 	{
 		"folke/which-key.nvim",

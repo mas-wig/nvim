@@ -43,6 +43,7 @@ return {
 							"Trouble",
 							"dashboard",
 							"mysql",
+							"markdown",
 							"sql",
 							"json",
 							"fugitive",

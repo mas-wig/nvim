@@ -5,6 +5,7 @@ return {
 		return not conditions.buffer_matches({
 			buftype = { "nofile", "terminal", "prompt", "help", "quickfix" },
 			filetype = {
+				"markdown",
 				"^alpha$",
 				"^harpoon$",
 				"^dashboard$",

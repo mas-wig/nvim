@@ -14,7 +14,7 @@ return {
 	links = {
 		style = "markdown",
 		name_is_source = false,
-		conceal = true,
+		conceal = false,
 		context = 0,
 		transform_explicit = function()
 			math.randomseed(os.time())

@@ -184,3 +184,63 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 		end
 	end,
 })
+
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "UIEnter" }, {
+	desc = "Show cursorline and cursorcolumn in current window.",
+	group = augroup("AutoHlCursorLines"),
+	callback = function()
+		if vim.fn.mode():match("^[itRsS\x13]") then
+			return
+		end
+		if vim.w._cul and not vim.wo.cul then
+			vim.wo.cul = true
+			vim.w._cul = nil
+		end
+		if vim.w._cuc and not vim.wo.cuc then
+			vim.wo.cuc = true
+			vim.w._cuc = nil
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("WinLeave", {
+	desc = "Hide cursorline and cursorcolumn in other windows.",
+	group = augroup("AutoHlCursorLines"),
+	callback = function()
+		if vim.wo.cul then
+			vim.w._cul = true
+			vim.wo.cul = false
+		end
+		if vim.wo.cuc then
+			vim.w._cuc = true
+			vim.wo.cuc = false
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+	desc = "Hide cursorline and cursorcolumn in insert mode.",
+	pattern = { "[itRss\x13]*:*", "*:[itRss\x13]*" },
+	group = augroup("AutoHlCursorLines"),
+	callback = function()
+		if vim.v.event.new_mode:match("^[itRss\x13]") then
+			if vim.wo.cul then
+				vim.w._cul = true
+				vim.wo.cul = false
+			end
+			if vim.wo.cuc then
+				vim.w._cuc = true
+				vim.wo.cuc = false
+			end
+		else
+			if vim.w._cul and not vim.wo.cul then
+				vim.wo.cul = true
+				vim.w._cul = nil
+			end
+			if vim.w._cuc and not vim.wo.cuc then
+				vim.wo.cuc = true
+				vim.w._cuc = nil
+			end
+		end
+	end,
+})

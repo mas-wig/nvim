@@ -40,15 +40,17 @@ return {
 			{ "<leader>fh", fzf("help_tags"), desc = "Help Tags" },
 			{ "<leader>fm", fzf("man_pages"), desc = "Man Pages" },
 			{ "<leader>fH", fzf("highlights"), desc = "Highlight Groups" },
-			{ "<leader>fc", fzf("commands"), desc = "Neovim Commands" },
+			{
+				"<leader>fc",
+				fzf("commands", { winopts = { height = 0.4, width = 0.4, preview = { hidden = "hidden" } } }),
+				desc = "Neovim Commands",
+			},
 			{ "<leader>fz", fzf("search_history"), desc = "Search History" },
 			{ "<leader>fm", fzf("marks"), desc = "Marks" },
-			{ "<leader>fc", fzf("changes"), desc = "Changes" },
+			{ "<leader>fC", fzf("changes"), desc = "Changes" },
 			{ "<leader>fj", fzf("jumps"), desc = "Jumps" },
 			{ "<leader>fk", fzf("keymaps"), desc = "Keymaps" },
 			{ "<leader>fR", fzf("registers"), desc = "Registers" },
-			{ "<leader>fd", fzf("diagnostics_document"), desc = "Document Diagnostics" },
-			{ "<leader>fD", fzf("diagnostics_workspace"), desc = "Workspace Diagnostics" },
 			{ "<leader>fr", fzf("resume"), desc = "Find Resume" },
 
 			-- git
@@ -61,40 +63,50 @@ return {
 			{ "<leader>hfS", fzf("git_stash"), desc = "`git stash`" },
 
 			-- Grep
-			{ "<leader>/", fzf("grep"), desc = "Grep with Pattern" },
-			{ "<leader>ss", fzf("grep"), desc = "Grep with Pattern" },
-			{ "<leader>sS", fzf("grep_last"), desc = "Run Last Grep" },
-			{ "<leader>sB", fzf("grep_curbuf"), desc = "Grep Current Buf" },
-			{ "<leader>sb", fzf("lgrep_curbuf"), desc = "Lgrep Current Buf" },
-			{ "<leader>sw", fzf("live_grep"), desc = "Lgrep Root Dir" },
-			{ "<leader>sW", fzf("live_grep_resume"), desc = "Lgrep last search" },
-			{ "<leader>sn", fzf("live_grep_native"), desc = "Native of Lgrep" },
-			{ "<leader>sg", fzf("live_grep_glob"), desc = "Lgrep with rg --glob" },
+			{ "<leader>/", fzf("grep", { prompt = "RG : " }), desc = "Grep with Pattern" },
+			{ "<leader>ss", fzf("grep", { prompt = "RG : " }), desc = "Grep with Pattern" },
+			{ "<leader>sS", fzf("grep_last", { prompt = "Resume Grep : " }), desc = "Run Last Grep" },
+			{ "<leader>sB", fzf("grep_curbuf", { prompt = "Grep CurBuf : " }), desc = "Grep Current Buf" },
+			{ "<leader>sb", fzf("lgrep_curbuf", { prompt = "LG CurBuf : " }), desc = "Lgrep Current Buf" },
+			{ "<leader>sw", fzf("live_grep", { prompt = "LG (root) : " }), desc = "Lgrep Root Dir" },
+			{ "<leader>sW", fzf("live_grep_resume", { prompt = "Resume LG : " }), desc = "Lgrep last search" },
+			{ "<leader>sn", fzf("live_grep_native", { prompt = "Native LG : " }), desc = "Native of Lgrep" },
+			{ "<leader>sg", fzf("live_grep_glob", { prompt = "LG `rg --glob` : " }), desc = "Lgrep with rg --glob" },
 
 			-- dap
-			{ "<leader>dsc", fzf("dap_commands"), desc = "Command" },
-			{ "<leader>dsC", fzf("dap_configurations"), desc = "Configuration" },
-			{ "<leader>dsb", fzf("dap_breakpoints"), desc = "Breakpoint" },
+			{
+				"<leader>dsc",
+				fzf("dap_commands", {
+					prompt = "Dap Commands : ",
+					winopts = { height = 0.4, width = 0.4, preview = { hidden = "hidden" } },
+				}),
+				desc = "Command",
+			},
+			{
+				"<leader>dsC",
+				fzf("dap_configurations", {
+					prompt = "Dap Configuration : ",
+					winopts = { height = 0.4, width = 0.4, preview = { hidden = "hidden" } },
+				}),
+				desc = "Configuration",
+			},
+			{
+				"<leader>dsb",
+				fzf("dap_breakpoints", {
+					prompt = "Dap Breakpoints : ",
+					winopts = { height = 0.4, width = 0.4, preview = { hidden = "hidden" } },
+				}),
+				desc = "Breakpoint",
+			},
 			{ "<leader>dsv", fzf("dap_variables"), desc = "Active Session Variables" },
 			{ "<leader>dsf", fzf("dap_frames"), desc = "Frames" },
-
-			-- LSP
-			-- { "<leader>gd", fzf("lsp_declarations"), desc = "Declaration" },
-			-- { "<leader>gs", fzf("lsp_document_symbols"), desc = "Document Symbols" },
-			-- { "<leader>gS", fzf("lsp_workspace_symbols"), desc = "Workspace Symbols" },
-			-- { "<leader>gL", fzf("lsp_live_workspace_symbols"), desc = "Live Workspace Symbols" },
-			-- { "<leader>gc", fzf("lsp_code_actions"), desc = "Code Action" },
-			-- { "<leader>gi", fzf("lsp_incoming_calls"), desc = "Incoming Calls" },
-			-- { "<leader>go", fzf("lsp_outgoing_calls"), desc = "Outgoing Calls" },
-			-- { "<leader>gf", fzf("lsp_finder"), desc = "Lsp Finder" },
-			-- { "<leader>gx", fzf("diagnostics_document"), desc = "Current Bufer Diagnostics" },
-			-- { "<leader>gX", fzf("diagnostics_workspace"), desc = "Workspace Diagnostics" },
 		}
 	end,
 	config = function()
 		local fmt, icons, fzf = string.format, require("utils.icons"), require("fzf-lua")
 		local ignore_folder = table.concat({
 			".git",
+			".obsidian",
 			"node_modules",
 			"vendor",
 			"debug",
@@ -105,8 +117,6 @@ return {
 			".idea",
 			".vscode",
 			".yarn",
-			".nyc_output",
-			"__generated__",
 		}, ",")
 
 		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
@@ -164,7 +174,6 @@ return {
 			},
 
 			grep = {
-				prompt = " Search : ",
 				input_prompt = " Grep For : ",
 				glob_flag = "--iglob",
 				glob_separator = "%s%-%-",
@@ -232,11 +241,9 @@ return {
 
 			lsp = {
 				code_actions = {
-					prompt = " Code Action : ",
 					winopts = { height = 0.3, width = 0.55, row = 0.45, preview = { hidden = "hidden" } },
 				},
-				finder = { prompt = " Lsp Finder : " },
-				symbols = { prompt = " Lsp Symbols : ", symbol_icons = icons.kinds },
+				symbols = { symbol_icons = icons.kinds },
 			},
 			args = { prompt = " Args : ", git_icons = false, files_only = true },
 			oldfiles = { prompt = " Old Files : ", git_icons = false },
@@ -248,8 +255,6 @@ return {
 			quickfix = { winopts = no_preview_winopts, prompt = " Quick Fix : " },
 			quickfix_stack = { prompt = " Quick Fix Stack : " },
 			diagnostics = {
-				winopts = no_preview_winopts,
-				prompt = " Diagnostics : ",
 				signs = {
 					["Error"] = { text = icons.diagnostics.Error, texthl = "DiagnosticError" },
 					["Warn"] = { text = icons.diagnostics.Warn, texthl = "DiagnosticWarn" },
