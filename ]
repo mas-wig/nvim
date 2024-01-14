@@ -2,8 +2,7 @@ return {
 	{
 		"ray-x/go.nvim",
 		ft = { "go", "gomod" },
-		branch = "master",
-		dependencies = { "ray-x/guihua.lua", build = "cd lua/fzy && make", branch = "master" },
+		dependencies = { "ray-x/guihua.lua", build = "cd lua/fzy && make" },
 		config = function()
 			require("plugins.language.golang")
 		end,

@@ -1,5 +1,4 @@
 local map = vim.keymap.set
-
 if vim.lsp.get_clients({ name = "gopls" }) then
 	map("n", "<leader>jw", "<cmd>GoFillSwitch<cr>", { desc = "Fill Switch" })
 	map("n", "<leader>jf", "<cmd>GoFillStruct<cr>", { desc = "Auto Sill Struct" })
