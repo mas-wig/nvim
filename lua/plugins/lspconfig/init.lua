@@ -9,33 +9,41 @@ return {
 	{
 		"stevearc/conform.nvim",
 		event = { "BufWritePre" },
-		opts = {
-			format_on_save = { timeout_ms = 1000, lsp_fallback = true },
-			formatters_by_ft = {
-				["lua"] = { "stylua" },
-				["go"] = { "goimports" },
-				["javascript"] = { "prettierd" },
-				["javascriptreact"] = { "prettierd" },
-				["typescript"] = { "prettierd" },
-				["typescriptreact"] = { "prettierd" },
-				["vue"] = { "prettierd" },
-				["css"] = { "prettierd" },
-				["scss"] = { "prettierd" },
-				["less"] = { "prettierd" },
-				["html"] = { "prettierd" },
-				["json"] = { "prettierd" },
-				["jsonc"] = { "prettierd" },
-				["yaml"] = { "prettierd" },
-				["markdown"] = { "prettierd" },
-				["markdown.mdx"] = { "prettierd" },
-				["graphql"] = { "prettierd" },
-				["handlebars"] = { "prettierd" },
-				["cpp"] = { "clang-format" },
-				["c"] = { "clang-format" },
-				["sql"] = { "sqlfmt" },
-				["mysql"] = { "sqlfmt" },
-			},
-		},
+		config = function()
+			vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+			local opts =
+				require("lazy.core.plugin").values(require("lazy.core.config").plugins["conform.nvim"], "opts", false)
+			local c = require("conform")
+			-- just like vim.tbl_deep_extend()
+			c.format(require("lazy.core.util").merge(opts.format, { bufnr = vim.api.nvim_get_current_buf() }))
+			c.setup({
+				format_on_save = { timeout_ms = 5000, lsp_fallback = true },
+				formatters_by_ft = {
+					["lua"] = { "stylua" },
+					["go"] = { "goimports" },
+					["javascript"] = { "prettierd" },
+					["javascriptreact"] = { "prettierd" },
+					["typescript"] = { "prettierd" },
+					["typescriptreact"] = { "prettierd" },
+					["vue"] = { "prettierd" },
+					["css"] = { "prettierd" },
+					["scss"] = { "prettierd" },
+					["less"] = { "prettierd" },
+					["html"] = { "prettierd" },
+					["json"] = { "prettierd" },
+					["jsonc"] = { "prettierd" },
+					["yaml"] = { "prettierd" },
+					["markdown"] = { "prettierd" },
+					["markdown.mdx"] = { "prettierd" },
+					["graphql"] = { "prettierd" },
+					["handlebars"] = { "prettierd" },
+					["cpp"] = { "clang-format" },
+					["c"] = { "clang-format" },
+					["sql"] = { "sqlfmt" },
+					["mysql"] = { "sqlfmt" },
+				},
+			})
+		end,
 	},
 	{
 		"williamboman/mason.nvim",

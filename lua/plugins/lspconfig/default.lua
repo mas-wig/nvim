@@ -133,6 +133,25 @@ return {
 	capabilities = vim.tbl_deep_extend(
 		"force",
 		vim.lsp.protocol.make_client_capabilities(),
-		require("cmp_nvim_lsp").default_capabilities()
+		require("cmp_nvim_lsp").default_capabilities(),
+		{
+			experimental = {
+				hoverActions = true,
+				hoverRange = true,
+				serverStatusNotification = true,
+				snippetTextEdit = true,
+				codeActionGroup = true,
+				ssr = true,
+				commands = {
+					commands = {
+						"rust-analyzer.runSingle",
+						"rust-analyzer.debugSingle",
+						"rust-analyzer.showReferences",
+						"rust-analyzer.gotoLocation",
+						"editor.action.triggerParameterHints",
+					},
+				},
+			},
+		}
 	),
 }

@@ -47,8 +47,24 @@ return {
 		"hrsh7th/nvim-cmp",
 		lazy = true,
 		config = function()
-			local luasnip, cmp = require("luasnip"), require("cmp")
-			cmp.event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
+			local luasnip, cmp, fmt, cmp_core = require("luasnip"), require("cmp"), string.format, require("cmp.core")
+			local _cmp_on_change, last_changed = cmp_core.on_change, 0
+
+			-- optimize on big file
+			function cmp_core.on_change(self, trigger_event)
+				local now = vim.uv.now()
+				local fast_typing = now - last_changed < 16
+				last_changed = now
+				if not fast_typing or trigger_event ~= "TextChanged" or cmp.visible() then
+					_cmp_on_change(self, trigger_event)
+					return
+				end
+				vim.defer_fn(function()
+					if last_changed == now then
+						_cmp_on_change(self, trigger_event)
+					end
+				end, 200)
+			end
 
 			local function contains_any(s, patterns)
 				for _, p in ipairs(patterns) do
@@ -65,7 +81,6 @@ return {
 					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 			end
 
-			local fmt = string.format
 			cmp.setup({
 				completion = { completeopt = "menu,menuone,noinsert" },
 				experimental = { ghost_text = { hl_group = "CmpGhostText" } },
@@ -91,6 +106,7 @@ return {
 						cmp.config.compare.order,
 					},
 				},
+				performance = { async_budget = 1, max_view_entries = 64 },
 				enabled = function()
 					local context = require("cmp.config.context")
 					if
@@ -99,6 +115,7 @@ return {
 						or vim.fn.reg_recording() ~= ""
 						or vim.fn.reg_executing() ~= ""
 						or context.in_treesitter_capture("comment")
+						or vim.b.bigfile
 					then
 						return false
 					end
@@ -254,6 +271,7 @@ return {
 					end,
 				},
 			})
+			cmp.event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
 
 			local cmdline = cmp.setup.cmdline
 			cmdline("/", {

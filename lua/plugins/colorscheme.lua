@@ -1,4 +1,9 @@
 local function hl_override(hl, c, util)
+	hl.MiniHipatternsTodo = { bg = c.cyan1, fg = c.black, bold = true }
+	hl.MiniHipatternsFixme = { bg = c.red, fg = c.black, bold = true }
+	hl.MiniHipatternsHack = { bg = c.yellow, fg = c.black, bold = true }
+	hl.MiniHipatternsNote = { bg = c.green, fg = c.black, bold = true }
+
 	hl.Visual = { bg = c.bg_visual, bold = true }
 	hl.VisualNOS = { bg = c.bg_visual, bold = true }
 	hl.WinBar = { bg = c.bg_statusline, underline = true, sp = util.darken(c.blue1, 0.8) }

@@ -63,20 +63,6 @@ return {
 			},
 		},
 	},
-	{
-		"folke/todo-comments.nvim",
-		cmd = { "TodoTrouble", "TodoTelescope" },
-		event = "BufRead",
-		config = true,
-		keys = {
-            -- stylua: ignore start
-			{ "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment", },
-			{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment", },
-			{ "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
-			{ "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
-			-- stylua: ignore end
-		},
-	},
 
 	{
 		"windwp/nvim-autopairs",
@@ -390,33 +376,14 @@ return {
 		end,
 	},
 	{
-		"echasnovski/mini.bufremove",
-		keys = {
-			{
-				"<leader>bd",
-				function()
-					local bd = require("mini.bufremove").delete
-					if vim.bo.modified then
-						local choice =
-							vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
-						if choice == 1 then -- Yes
-							vim.cmd.write()
-							bd(0)
-						elseif choice == 2 then -- No
-							bd(0, true)
-						end
-					else
-						bd(0)
-					end
-				end,
-				desc = "Delete Buffer",
-			},
-			{
-				"<leader>bD",
-				function()
-					require("mini.bufremove").delete(0, true)
-				end,
-				desc = "Delete Buffer (Force)",
+		"echasnovski/mini.hipatterns",
+		event = "BufRead",
+		opts = {
+			highlighters = {
+				todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
+				fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
+				hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
+				note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 			},
 		},
 	},

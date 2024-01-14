@@ -70,6 +70,7 @@ vim.opt.synmaxcol = 300
 vim.opt.whichwrap = "h,l"
 vim.opt.visualbell = true
 vim.opt.cursorcolumn = true
+vim.opt.guifont = "Iosevka NF Medium, Symbols Nerd Font, Noto Color Emoji"
 vim.opt.cursorlineopt = "both"
 vim.opt.diffopt:append("algorithm:histogram")
 vim.opt.wildignore = {
