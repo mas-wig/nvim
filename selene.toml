@@ -1,2 +1,5 @@
+std = "neovim"
+
 [rules]
-shadowing = "allow"
+global_usage = "allow"
+multiple_statements = "allow"

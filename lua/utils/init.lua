@@ -56,7 +56,13 @@ function M.fzf(builtin, opts)
 				["--margin"] = "0",
 			},
 		}, opts or {})
-		if builtin == "files" then
+		if
+			builtin == "files"
+			and not vim.fs.find(
+				{ ".obsidian" },
+				{ path = os.getenv("HOME") .. "/Notes", upward = true, type = "directory" }
+			)[1]
+		then
 			if vim.uv.fs_stat(string.format("%s/.git", (opts.cwd or vim.uv.cwd()))) then
 				builtin = "git_files"
 			else

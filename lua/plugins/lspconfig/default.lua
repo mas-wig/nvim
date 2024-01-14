@@ -20,9 +20,9 @@ local function goto_diag(direction, level)
 end
 
 local function lsp_rename()
-	local originHandler = vim.lsp.handlers[method.textDocument_rename]
+	local renameHandler = vim.lsp.handlers[method.textDocument_rename]
 	vim.lsp.handlers[method.textDocument_rename] = function(err, result, ctx, config)
-		originHandler(err, result, ctx, config)
+		renameHandler(err, result, ctx, config)
 		if err or not result then
 			return
 		end

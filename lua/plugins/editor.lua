@@ -20,7 +20,6 @@ return {
 		},
 		cmd = "DBUI",
 	},
-
 	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble" },
@@ -257,7 +256,6 @@ return {
 			},
 		},
 	},
-
 	{
 		"ThePrimeagen/harpoon",
 		dependencies = { "nvim-lua/plenary.nvim" },
@@ -268,92 +266,12 @@ return {
 			harpoon:setup({
 				settings = {
 					save_on_toggle = true,
-					-- sync_on_ui_close = true,
+					sync_on_ui_close = true,
 					key = function()
-						return vim.uv.cwd() --[[@as string]]
-					end,
-				},
-				tmux = {
-					automated = true,
-					encode = false,
-					prepopulate = function(cb)
-						vim.system({ "tmux", "list-sessions" }, { text = true }, function(out)
-							if out.code ~= 0 then
-								return {}
-							end
-							local sessions = out.stdout or ""
-							local lines = {}
-							for s in sessions:gmatch("[^\r\n]+") do
-								table.insert(lines, { value = s, context = { row = 1, col = 1 } })
-							end
-							cb(lines)
-						end)
-					end,
-					select = function(list_item, _, _)
-						local sessionName = string.match(list_item.value, "([^:]+)")
-						vim.system({ "tmux", "switch-client", "-t", sessionName }, {}, function() end)
-					end,
-					remove = function(list_item, _)
-						local sessionName = string.match(list_item.value, "([^:]+)")
-						return vim.system({ "tmux", "kill-session", "-t", sessionName }, {}, function() end)
+						return vim.uv.cwd()
 					end,
 				},
 				default = {},
-			})
-
-			---@param list HarpoonList
-			local function prepopulate(list)
-				---@diagnostic disable-next-line: undefined-field
-				if list.config.prepopulate and list:length() == 0 then
-					-- async via callback, or sync via return value
-					local sync_items =
-						---@diagnostic disable-next-line: undefined-field
-						list.config.prepopulate(function(items)
-							if type(items) ~= "table" then
-								return
-							end
-							for _, item in ipairs(items) do
-								list:append(item)
-							end
-							-- if ui is open, buffer needs to be updated
-							-- so that items aren't removed immediately after being added
-							vim.schedule(function()
-								local ui_buf = harpoon.ui.bufnr
-								if ui_buf and vim.api.nvim_buf_is_valid(ui_buf) then
-									local lines = list:display()
-									vim.api.nvim_buf_set_lines(ui_buf, 0, -1, false, lines)
-								end
-							end)
-						end)
-					if sync_items and type(sync_items) == "table" then
-						for _, item in ipairs(sync_items) do
-							list:append(item)
-						end
-					end
-				end
-			end
-
-			harpoon:extend({
-				UI_CREATE = function(cx)
-					local win = cx.win_id
-					vim.wo[win].cursorline = true
-					vim.wo[win].signcolumn = "no"
-					vim.keymap.set("n", "<C-v>", function()
-						harpoon.ui:select_menu_item({ vsplit = true })
-					end, { buffer = cx.bufnr })
-					vim.keymap.set("n", "<C-s>", function()
-						harpoon.ui:select_menu_item({ split = true })
-					end, { buffer = cx.bufnr })
-				end,
-				---@param list HarpoonList
-				LIST_READ = function(list)
-					---@diagnostic disable-next-line: undefined-field
-					if list.config.automated then
-						list:clear()
-						prepopulate(list)
-					end
-				end,
-				LIST_CREATED = prepopulate,
 			})
 		end,
 		keys = function()
@@ -381,8 +299,6 @@ return {
 		opts = {
 			highlighters = {
 				todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
-				fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
-				hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
 				note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 			},
 		},

@@ -18,6 +18,8 @@ return {
 				link_children = true,
 				region_check_events = "CursorMoved,CursorMovedI",
 				delete_check_events = "TextChanged,TextChangedI",
+				ext_base_prio = 300,
+				ft_func = require("luasnip.extras.filetype_functions").from_cursor_pos,
 				store_selection_keys = "<Tab>",
 				ext_opts = {
 					[t.choiceNode] = { active = { virt_text = { { "│", "NeoTreeTabActive" } } } },
@@ -26,21 +28,6 @@ return {
 				},
 			})
 			require("luasnip.loaders.from_vscode").lazy_load()
-			vim.api.nvim_create_autocmd("ModeChanged", {
-				group = vim.api.nvim_create_augroup("mariasolos/unlink_snippet", { clear = true }),
-				desc = "Cancel the snippet session when leaving insert mode",
-				pattern = { "s:n", "i:*" },
-				callback = function(args)
-					if
-						luasnip.session
-						and luasnip.session.current_nodes[args.buf]
-						and not luasnip.session.jump_active
-						and not luasnip.choice_active()
-					then
-						luasnip.unlink_current()
-					end
-				end,
-			})
 		end,
 	},
 	{

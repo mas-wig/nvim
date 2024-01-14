@@ -3,7 +3,20 @@ return {
 		"kosayoda/nvim-lightbulb",
 		event = "LspAttach",
 		config = function()
-			require("nvim-lightbulb").setup({ autocmd = { enabled = true } })
+			require("nvim-lightbulb").setup({
+				autocmd = { enabled = true },
+				-- ignore = { clients = { "lua_ls" }, ft = { "lua" } },
+				validate_config = "always",
+				action_kinds = {
+					"source",
+					"source.organizeImports",
+					"quickfix",
+					"refactor",
+					"refactor.extract",
+					"refactor.inline",
+					"refactor.rewrite",
+				},
+			})
 		end,
 	},
 	{
