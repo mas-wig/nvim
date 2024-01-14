@@ -31,10 +31,8 @@ C.cpp = {
 			local program
 			vim.ui.input({
 				prompt = "Enter path to executable: ",
-				default = vim.fs.find(
-					{ vim.fn.expand("%:t:r"), "a.out" },
-					{ path = vim.fn.expand("%:p:h"), upward = true }
-				)[1] or cache.cpp.program,
+				default = require("mason-registry").get_package("codelldb"):get_install_path() .. "/codelldb"
+					or cache.cpp.program,
 				completion = "file",
 			}, function(input)
 				program = input

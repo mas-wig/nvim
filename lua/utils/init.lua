@@ -60,7 +60,7 @@ function M.fzf(builtin, opts)
 			builtin == "files"
 			and not vim.fs.find(
 				{ ".obsidian" },
-				{ path = os.getenv("HOME") .. "/Notes", upward = true, type = "directory" }
+				{ path = require("utils.dir").root(), upward = true, type = "directory" }
 			)[1]
 		then
 			if vim.uv.fs_stat(string.format("%s/.git", (opts.cwd or vim.uv.cwd()))) then

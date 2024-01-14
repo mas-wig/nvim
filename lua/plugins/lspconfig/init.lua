@@ -66,6 +66,7 @@ return {
 			max_concurrent_installers = 10,
 			PATH = "prepend",
 			ensure_installed = {
+				"codelldb",
 				"clangd",
 				"lua-language-server",
 				"rust-analyzer",
