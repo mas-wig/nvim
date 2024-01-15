@@ -237,4 +237,34 @@ return {
 			end, { desc = "Lint this files", buffer = vim.api.nvim_get_current_buf() })
 		end,
 	},
+
+	{
+		"rest-nvim/rest.nvim",
+		keys = { { "<leader>tr", "<Plug>RestNvim<cr>", desc = "Test REST" } },
+		config = function()
+			require("rest-nvim").setup({
+				result_split_horizontal = false,
+				result_split_in_place = false,
+				stay_in_current_window_after_split = false,
+				skip_ssl_verification = false,
+				encode_url = true,
+				highlight = { enabled = true, timeout = 200 },
+				result = {
+					show_url = false,
+					show_curl_command = false,
+					show_http_info = true,
+					show_headers = true,
+					show_statistics = false,
+					formatters = {
+						json = "jq",
+						html = function(body)
+							return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
+						end,
+					},
+				},
+				yank_dry_run = true,
+				search_back = true,
+			})
+		end,
+	},
 }

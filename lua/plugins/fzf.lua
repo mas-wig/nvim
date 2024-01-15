@@ -109,6 +109,7 @@ return {
 			".obsidian",
 			"node_modules",
 			"bin",
+			"db",
 			"vendor",
 			"debug",
 			".next",
