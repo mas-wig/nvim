@@ -69,23 +69,24 @@ local function hl_override(hl, c, util)
 	hl.DiagnosticFloatingInfo = { link = "DiagnosticInfo", default = true }
 	hl.DiagnosticFloatingHint = { link = "DiagnosticHint", default = true }
 
-	hl.OilDir = { default = true, link = "Directory" }
+	hl.OilDir = { link = "Directory" }
 	hl.OilDirIcon = { link = "Directory" }
 	hl.OilLink = { link = "Constant" }
 	hl.OilLinkTarget = { link = "Comment" }
-	hl.OilCopy = { link = "DiagnosticSignHint" }
-	hl.OilMove = { link = "DiagnosticSignWarn" }
-	hl.OilCreate = { link = "DiagnosticSignInfo" }
-	hl.OilDelete = { link = "DiagnosticSignError" }
-	hl.OilChange = { link = "DiagnosticSignWarn" }
-	hl.OilPermissionRead = { fg = c.yellow1, bold = true }
+	hl.OilCopy = { link = "DiagnosticSignHint", bold = true }
+	hl.OilMove = { link = "DiagnosticSignWarn", bold = true }
+	hl.OilChange = { link = "DiagnosticSignWarn", bold = true }
+	hl.OilCreate = { link = "DiagnosticSignInfo", bold = true }
+	hl.OilDelete = { link = "DiagnosticSignError", bold = true }
 	hl.OilPermissionNone = { link = "NonText" }
-	hl.OilPermissionWrite = { fg = c.green2, bold = true }
-	hl.OilPermissionExecute = { fg = c.magenta2, bold = true }
+	hl.OilPermissionRead = { link = "DiagnosticSignWarn" }
+	hl.OilPermissionWrite = { link = "DiagnosticSignError" }
+	hl.OilPermissionExecute = { link = "DiagnosticSignOk" }
 	hl.OilTypeDir = { link = "Directory" }
 	hl.OilTypeFifo = { link = "Special" }
 	hl.OilTypeFile = { link = "NonText" }
 	hl.OilTypeLink = { link = "Constant" }
+	hl.OilTypeSocket = { link = "OilSocket" }
 	hl.FzfLuaBorder = { link = "Comment" }
 end
 

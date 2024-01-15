@@ -64,168 +64,6 @@ return {
 	},
 
 	{
-		"windwp/nvim-autopairs",
-		event = "InsertEnter",
-		keys = {
-			{
-				"<leader>up",
-				function()
-					local Util = require("lazy.core.util")
-					local autopairs = require("nvim-autopairs")
-					if autopairs.state.disabled then
-						autopairs.enable()
-						Util.info("Enabled auto pairs", { title = "Option" })
-					else
-						autopairs.disable()
-						Util.warn("Disabled auto pairs", { title = "Option" })
-					end
-				end,
-				desc = "Toggle auto pairs",
-			},
-		},
-		config = function()
-			local npairs = require("nvim-autopairs")
-			local Rule = require("nvim-autopairs.rule")
-			local cond = require("nvim-autopairs.conds")
-			npairs.setup({
-				check_ts = true,
-				map_c_h = true,
-				map_c_w = true,
-				enable_abbr = true,
-				disable_in_macro = true,
-				enable_check_bracket_line = true,
-				ignored_next_char = [=[[%w%%%'%[%"%.%`]]=],
-				fast_wrap = {
-					map = "<A-c>",
-					chars = { "{", "[", "(", '"', "'", "`" },
-					pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
-					offset = 0, -- Offset from pattern match
-					end_key = "$",
-					keys = "qwertyuiopzxcvbnmasdfghjkl",
-					check_comma = true,
-					highlight = "Search",
-					highlight_grey = "Comment",
-				},
-			})
-
-			npairs.add_rules({
-				Rule(" ", " "):with_pair(function(opts)
-					local pairs_single_char = { "()", "[]", "{}" }
-					local pairs_double_char = { "/**/" }
-					local line_before_cur = opts.line:sub(1, opts.col - 1)
-					if
-						vim.bo[opts.bufnr].ft == "markdown"
-						and (line_before_cur:match("^%s*[-*+]%s+%[$") or line_before_cur:match("^%s*%d+%.%s+%[$"))
-					then
-						pairs_single_char = { "()", "{}" }
-					end
-					return vim.tbl_contains(pairs_single_char, opts.line:sub(opts.col - 1, opts.col))
-						or vim.tbl_contains(pairs_double_char, opts.line:sub(opts.col - 2, opts.col + 1))
-				end):with_del(function(opts)
-					return vim.fn.match(opts.line:sub(1, opts.col):reverse(), [[\s\((\|[\|{\|\*\/\)]]) == 0
-				end),
-
-				Rule("<<<", ">>>", { "cuda" }),
-				Rule("/*", "*/", { "c", "cpp" }),
-				Rule("$", "$", { "markdown", "tex" }):with_pair(cond.none()),
-				Rule("*", "*", { "markdown" }):with_pair(cond.none()),
-				Rule("\\(", "\\)"):with_pair(cond.not_before_text("\\)")),
-				Rule("\\(", "\\)", { "tex" }):with_pair(cond.not_before_text("\\)")),
-				Rule("\\[", "\\]", { "tex" }):with_pair(cond.not_before_text("\\]")),
-				Rule("\\{", "\\}", { "tex", "markdown" }):with_pair(cond.not_before_text("\\}")),
-				Rule("\\left(", "\\right)", { "markdown", "tex" }):with_pair(cond.not_before_text("\\right)")),
-				Rule("\\left[", "\\right]", { "markdown", "tex" }):with_pair(cond.not_before_text("\\right]")),
-				Rule("\\left{", "\\right}", { "markdown", "tex" }):with_pair(cond.not_before_text("\\right}")),
-				Rule("\\left<", "\\right>", { "markdown", "tex" }):with_pair(cond.not_before_text("\\right>")),
-				Rule("\\left\\lfloor ", " \\right\\rfloor", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\right\\rfloor)")
-				),
-				Rule("\\left\\lceil ", " \\right\\rceil", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\right\\rceil)")
-				),
-				Rule("\\left\\vert ", " \\right\\vert", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\right\\vert")
-				),
-				Rule("\\left\\lVert ", " \\right\\rVert", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\right\\lVert")
-				),
-				Rule("\\left\\lVert ", " \\right\\rVert", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\right\\lVert")
-				),
-				Rule("\\begin{bmatrix} ", " \\end{bmatrix}", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\end{bmatrix}")
-				),
-				Rule("\\begin{pmatrix} ", " \\end{pmatrix}", { "markdown", "tex" }):with_pair(
-					cond.not_before_text("\\end{pmatrix}")
-				),
-			})
-
-			local brackets = { { "(", ")" }, { "[", "]" }, { "{", "}" } }
-			npairs.add_rules({
-				Rule(" ", " ")
-					-- Pair will only occur if the conditional function returns true
-					:with_pair(function(opts)
-						-- We are checking if we are inserting a space in (), [], or {}
-						local pair = opts.line:sub(opts.col - 1, opts.col)
-						return vim.tbl_contains({
-							brackets[1][1] .. brackets[1][2],
-							brackets[2][1] .. brackets[2][2],
-							brackets[3][1] .. brackets[3][2],
-						}, pair)
-					end)
-					:with_move(cond.none())
-					:with_cr(cond.none())
-					-- We only want to delete the pair of spaces when the cursor is as such: ( | )
-					:with_del(
-						function(opts)
-							local col = vim.api.nvim_win_get_cursor(0)[2]
-							local context = opts.line:sub(col - 1, col + 2)
-							return vim.tbl_contains({
-								brackets[1][1] .. "  " .. brackets[1][2],
-								brackets[2][1] .. "  " .. brackets[2][2],
-								brackets[3][1] .. "  " .. brackets[3][2],
-							}, context)
-						end
-					),
-			})
-			-- For each pair of brackets we will add another rule
-			for _, bracket in pairs(brackets) do
-				npairs.add_rules({
-					-- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
-					Rule(bracket[1] .. " ", " " .. bracket[2])
-						:with_pair(cond.none())
-						:with_move(function(opts)
-							return opts.char == bracket[2]
-						end)
-						:with_del(cond.none())
-						:use_key(bracket[2])
-						-- Removes the trailing whitespace that can occur without this
-						:replace_map_cr(function(_)
-							return "<C-c>2xi<CR><C-c>O"
-						end),
-				})
-			end
-			for _, punct in pairs({ ",", ";" }) do
-				require("nvim-autopairs").add_rules({
-					require("nvim-autopairs.rule")("", punct)
-						:with_move(function(opts)
-							return opts.char == punct
-						end)
-						:with_pair(function()
-							return false
-						end)
-						:with_del(function()
-							return false
-						end)
-						:with_cr(function()
-							return false
-						end)
-						:use_key(punct),
-				})
-			end
-		end,
-	},
-	{
 		"echasnovski/mini.surround",
 		keys = function(_, keys)
 			local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
@@ -294,13 +132,88 @@ return {
 		end,
 	},
 	{
-		"echasnovski/mini.hipatterns",
-		event = "BufRead",
+		"altermo/ultimate-autopair.nvim",
+		event = { "InsertEnter" },
+		branch = "v0.6",
+		config = function()
+			local function get_two_char_after()
+				local col, line
+				if vim.fn.mode():match("^c") then
+					col = vim.fn.getcmdpos()
+					line = vim.fn.getcmdline()
+				else
+					col = vim.fn.col(".")
+					line = vim.api.nvim_get_current_line()
+				end
+				return line:sub(col, col + 1)
+			end
+			local compltype = {}
+			local IGNORE_REGEX = vim.regex([=[^\(\k\|\\\?[([{]\)]=])
+			require("ultimate-autopair").setup({
+				extensions = {
+					alpha = false,
+					tsnode = false,
+					utf8 = false,
+					filetype = { tree = false },
+					cond = {
+						cond = function(f)
+							return not f.in_macro()
+								and not IGNORE_REGEX:match_str(get_two_char_after())
+								and (not f.in_cmdline() or compltype[1] ~= "" or compltype[2] ~= "command")
+						end,
+					},
+				},
+				{ "\\(", "\\)" },
+				{ "\\[", "\\]" },
+				{ "\\{", "\\}" },
+			})
+		end,
+	},
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {
-			highlighters = {
-				todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
-				note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
+			signs = true,
+			sign_priority = 8,
+			keywords = {
+				FIX = { icon = " ", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+				TODO = { icon = " ", color = "info" },
+				HACK = { icon = " ", color = "warning" },
+				WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+				PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+				NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+				TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
 			},
+			gui_style = { fg = "NONE", bg = "BOLD" },
+			merge_keywords = true,
+			highlight = {
+				multiline = true,
+				multiline_pattern = "^.",
+				multiline_context = 10,
+				before = "",
+				keyword = "wide",
+				after = "fg",
+				pattern = [[.*<(KEYWORDS)\s*:]],
+				comments_only = true,
+				max_line_len = 400,
+				exclude = { "markdown" },
+			},
+			colors = {
+				error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
+				warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
+				info = { "DiagnosticInfo", "#2563EB" },
+				hint = { "DiagnosticHint", "#10B981" },
+				default = { "Identifier", "#7C3AED" },
+				test = { "Identifier", "#FF00FF" },
+			},
+		},
+		keys = {
+            -- stylua: ignore start
+			{ "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment", },
+			{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment", },
+			{ "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
+			{ "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
+			-- stylua: ignore end
 		},
 	},
 }

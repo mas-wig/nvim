@@ -258,7 +258,6 @@ return {
 					end,
 				},
 			})
-			cmp.event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
 
 			local cmdline = cmp.setup.cmdline
 			cmdline("/", {
