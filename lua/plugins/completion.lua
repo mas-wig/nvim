@@ -208,26 +208,17 @@ return {
 					fields = { "kind", "abbr", "menu" },
 					format = function(_, vim_item)
 						local icons = require("utils.icons").kinds
-						local complpath = ({ dir = true, file = true, file_in_path = true, runtime = true })[vim.fn.getcmdcompltype()]
-						if complpath then
-							local path_escaped = vim.fn.fnameescape(vim_item.word)
-							vim_item.word = path_escaped
-							vim_item.abbr = path_escaped
-						end
-						-- Use special icons for file / directory completions
-						if vim_item.kind == "File" or vim_item.kind == "Folder" or complpath then
-							if vim_item.kind == "Folder" then -- Directories
-								vim_item.kind = icons.Folder
-								vim_item.kind_hl_group = "Directory"
-							else -- Files
-								local icon, icon_hl = require("nvim-web-devicons").get_icon(
-									vim.fs.basename(vim_item.word),
-									vim.fn.fnamemodify(vim_item.word, ":e"),
-									{ default = true }
-								)
-								vim_item.kind = icon or icons.File
-								vim_item.kind_hl_group = icon_hl or "CmpItemKindFile"
-							end
+						if vim_item.kind == "Folder" then
+							vim_item.kind = icons.Folder
+							vim_item.kind_hl_group = "Directory"
+						elseif vim_item.kind == "File" then
+							local icon, icon_hl = require("nvim-web-devicons").get_icon(
+								vim.fs.basename(vim_item.word),
+								vim.fn.fnamemodify(vim_item.word, ":e"),
+								{ default = true }
+							)
+							vim_item.kind = icon or icons.File
+							vim_item.kind_hl_group = icon_hl or "CmpItemKindFile"
 						else
 							vim_item.menu = vim_item.kind
 							vim_item.menu_hl_group = "CmpItemKind" .. vim_item.kind
