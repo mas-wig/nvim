@@ -279,17 +279,17 @@ return {
 				},
 				bcommits = {
 					prompt = " Git Buffer Commit : ",
-					cmd = "git log --pretty=oneline --abbrev-commit --color",
-					preview = "git show --pretty='%Cred%H%n%Cblue%an%n%Cgreen%s' --color {1}",
+					cmd = "git log --color --pretty=format:'%C(yellow)%h%Creset %Cgreen(%><(12)%cr%><|(12))%Creset %s %C(blue)<%an>%Creset' {file}",
+					preview = "git show --color {1} -- {file}",
 				},
 				commits = {
 					prompt = "Commits❯ ",
-					cmd = "git log --pretty=oneline --abbrev-commit --color",
-					preview = "git show --pretty='%Cred%H%n%Cblue%an%n%Cgreen%s' --color {1}",
+					cmd = "git log --color --pretty=format:'%C(yellow)%h%Creset %Cgreen(%><(12)%cr%><|(12))%Creset %s %C(blue)<%an>%Creset' {file}",
+					preview = "git show --color {1} -- {file}",
 				},
 				status = {
 					prompt = " Git Status : ",
-					cmd = "git status -su",
+					cmd = "git -c color.status=false status -su",
 					previewer = "git_diff",
 					file_icons = true,
 					git_icons = true,
@@ -297,7 +297,7 @@ return {
 				},
 				files = {
 					prompt = " Git Files : ",
-					cmd = [[git ls-files --exclude-standard]],
+					cmd = [[git ls-files --exclude-standard --others]],
 					multiprocess = true,
 					git_icons = false,
 					file_icons = true,

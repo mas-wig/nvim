@@ -35,7 +35,7 @@ return {
 		lazy = true,
 		config = function()
 			local luasnip, cmp, fmt, cmp_core = require("luasnip"), require("cmp"), string.format, require("cmp.core")
-			local _cmp_on_change, last_changed = cmp_core.on_change, 0
+			local _cmp_on_change, last_changed, cmdline = cmp_core.on_change, 0, cmp.setup.cmdline
 
 			-- optimize on big file
 			function cmp_core.on_change(self, trigger_event)
@@ -250,7 +250,6 @@ return {
 				},
 			})
 
-			local cmdline = cmp.setup.cmdline
 			cmdline("/", {
 				formatting = { fields = { cmp.ItemField.Abbr } },
 				mapping = cmp.mapping.preset.cmdline(),
