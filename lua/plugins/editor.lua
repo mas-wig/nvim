@@ -104,12 +104,27 @@ return {
 			harpoon:setup({
 				settings = {
 					save_on_toggle = true,
-					sync_on_ui_close = true,
+					sync_on_ui_close = false,
 					key = function()
 						return vim.uv.cwd()
 					end,
 				},
 				default = {},
+			})
+			harpoon:extend({
+				UI_CREATE = function(cx)
+					vim.keymap.set("n", "<C-v>", function()
+						harpoon.ui:select_menu_item({ vsplit = true })
+					end, { buffer = cx.bufnr })
+
+					vim.keymap.set("n", "<C-h>", function()
+						harpoon.ui:select_menu_item({ split = true })
+					end, { buffer = cx.bufnr })
+
+					vim.keymap.set("n", "<C-t>", function()
+						harpoon.ui:select_menu_item({ tabedit = true })
+					end, { buffer = cx.bufnr })
+				end,
 			})
 		end,
 		keys = function()
@@ -117,7 +132,7 @@ return {
 			return {
                 -- stylua: ignore start
 				{ "<A-a>", function() vim.notify("Add to Mark",2) harpoon:list():append() end, desc = "Add to Mark" },
-				{ "<A-space>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Harpoon Toggle" },
+				{ "<A-space>", function() harpoon.ui:toggle_quick_menu(harpoon:list(),{ title = "" }) end, desc = "Harpoon Toggle" },
 				{ "<A-1>", function() harpoon:list():select(1) end, desc = "Goto Mark 1" },
 				{ "<A-2>", function() harpoon:list():select(2) end, desc = "Goto Mark 2" },
 				{ "<A-3>", function() harpoon:list():select(3) end, desc = "Goto Mark 3" },
