@@ -162,7 +162,7 @@ return {
 						if #selected > 1 then
 							return send_to_qf(selected, opts)
 						else
-							return require("fzf-lua").actions.file_edit(selected, opts)
+							return require("fzf-lua.actions").file_edit(selected, opts)
 						end
 					end,
 					["ctrl-l"] = fzf.actions.arg_add,
