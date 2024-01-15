@@ -297,7 +297,7 @@ return {
 				},
 				files = {
 					prompt = " Git Files : ",
-					cmd = [[git ls-files --exclude-standard --others]],
+					cmd = [[git ls-files --exclude-standard]],
 					multiprocess = true,
 					git_icons = false,
 					file_icons = true,
