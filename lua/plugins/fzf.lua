@@ -104,6 +104,8 @@ return {
 	end,
 	config = function()
 		local fmt, icons, fzf = string.format, require("utils.icons"), require("fzf-lua")
+		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
+
 		local ignore_folder = table.concat({
 			".git",
 			".obsidian",
@@ -121,12 +123,48 @@ return {
 			".yarn",
 		}, ",")
 
-		local no_preview_winopts = { height = 0.7, width = 0.8, preview = { hidden = "hidden" } }
+		local function send_to_qf(selected, opts, is_loclist)
+			local qf_list = {}
+			for i = 1, #selected do
+				local file = require("fzf-lua.path").entry_to_file(selected[i], opts)
+				local text = selected[i]:match(":%d+:%d?%d?%d?%d?:?(.*)$")
+				table.insert(
+					qf_list,
+					{ filename = file.bufname or file.path, lnum = file.line, col = file.col, text = text }
+				)
+			end
+			local title = fmt(
+				"[FzfLua] %s%s",
+				opts.__INFO and opts.__INFO.cmd .. ": " or "",
+				require("fzf-lua.utils").resume_get("query", opts) or ""
+			)
+			if is_loclist then
+				vim.fn.setloclist(0, {}, " ", { nr = "$", items = qf_list, title = title })
+				if type(opts.lopen) == "function" then
+					opts.lopen(selected, opts)
+				elseif opts.lopen ~= false then
+					return require("trouble").toggle("loclist")
+				end
+			else
+				vim.fn.setqflist({}, " ", { nr = "$", items = qf_list, title = title })
+				if type(opts.copen) == "function" then
+					opts.copen(selected, opts)
+				elseif opts.copen ~= false then
+					return require("trouble").toggle("quickfix")
+				end
+			end
+		end
 
 		return fzf.setup({
 			actions = {
 				files = {
-					["default"] = fzf.actions.file_edit_or_qf,
+					["default"] = function(selected, opts)
+						if #selected > 1 then
+							return send_to_qf(selected, opts)
+						else
+							return require("fzf-lua").actions.file_edit(selected, opts)
+						end
+					end,
 					["ctrl-l"] = fzf.actions.arg_add,
 					["ctrl-s"] = fzf.actions.file_split,
 					["ctrl-v"] = fzf.actions.file_vsplit,
