@@ -108,6 +108,7 @@ return {
 			".git",
 			".obsidian",
 			"node_modules",
+			"bin",
 			"vendor",
 			"debug",
 			".next",
