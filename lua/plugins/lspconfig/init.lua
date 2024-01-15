@@ -182,6 +182,11 @@ return {
 				end,
 			})
 
+			for name, icon in pairs(require("utils.icons").diagnostics) do
+				name = "DiagnosticSign" .. name
+				vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+			end
+			vim.diagnostic.config(require("utils").diagnostic_conf)
 			vim.schedule(function()
 				local lspconfig, methods = require("lspconfig"), vim.lsp.protocol.Methods
 				require("lspconfig.ui.windows").default_options.border = "single"
@@ -267,50 +272,6 @@ return {
 					end,
 					hide = hide,
 				}
-
-				local diagIcons = require("utils.icons").diagnostics
-				vim.diagnostic.config({
-					underline = true,
-					update_in_insert = false,
-					severity_sort = true,
-					signs = {
-						text = {
-							[vim.diagnostic.severity.ERROR] = diagIcons.Error,
-							[vim.diagnostic.severity.WARN] = diagIcons.Warn,
-							[vim.diagnostic.severity.INFO] = diagIcons.Hint,
-							[vim.diagnostic.severity.HINT] = diagIcons.Info,
-						},
-						numhl = {
-							[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
-							[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
-							[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
-							[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
-						},
-					},
-					virtual_text = {
-						spacing = 4,
-						source = "if_many",
-						prefix = "",
-						format = function(d)
-							local icons = {}
-							for key, value in pairs(diagIcons) do
-								icons[key:upper()] = value
-							end
-							return string.format(" %s : %s ", icons[vim.diagnostic.severity[d.severity]], d.message)
-						end,
-					},
-					float = {
-						format = function(d)
-							return string.format(" [%s] : %s ", d.source, d.message)
-						end,
-						source = "if_many",
-						severity_sort = true,
-						wrap = true,
-						border = vim.g.border,
-						max_width = math.floor(vim.o.columns / 2),
-						max_height = math.floor(vim.o.lines / 3),
-					},
-				})
 			end)
 		end,
 	},

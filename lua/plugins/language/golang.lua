@@ -1,4 +1,3 @@
-local diagIcons = require("utils.icons").diagnostics
 return require("go").setup({
 	disable_defaults = false,
 	go = "go",
@@ -22,6 +21,7 @@ return require("go").setup({
 	luasnip = true,
 	iferr_vertical_shift = 4,
 	dap_debug = true,
+	diagnostic = require("utils").diagnostic_conf,
 	dap_debug_keymap = false,
 	dap_debug_vt = { enabled_commands = true, all_frames = true },
 	dap_port = 38697,
@@ -39,48 +39,6 @@ return require("go").setup({
 			}
 		end
 	end,
-	diagnostic = {
-		underline = true,
-		update_in_insert = false,
-		severity_sort = true,
-		signs = {
-			text = {
-				[vim.diagnostic.severity.ERROR] = diagIcons.Error,
-				[vim.diagnostic.severity.WARN] = diagIcons.Warn,
-				[vim.diagnostic.severity.INFO] = diagIcons.Hint,
-				[vim.diagnostic.severity.HINT] = diagIcons.Info,
-			},
-			numhl = {
-				[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
-				[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
-				[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
-				[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
-			},
-		},
-		virtual_text = {
-			spacing = 4,
-			source = "if_many",
-			prefix = "",
-			format = function(d)
-				local icons = {}
-				for key, value in pairs(diagIcons) do
-					icons[key:upper()] = value
-				end
-				return string.format(" %s : %s ", icons[vim.diagnostic.severity[d.severity]], d.message)
-			end,
-		},
-		float = {
-			format = function(d)
-				return string.format(" [%s] : %s ", d.source, d.message)
-			end,
-			source = "if_many",
-			severity_sort = true,
-			wrap = true,
-			border = vim.g.border,
-			max_width = math.floor(vim.o.columns / 2),
-			max_height = math.floor(vim.o.lines / 3),
-		},
-	},
 	lsp_cfg = {
 		capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
 		settings = {

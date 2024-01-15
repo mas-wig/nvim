@@ -74,8 +74,8 @@ return {
 				dapui.close({})
 				require("nvim-dap-virtual-text").refresh()
 			end
-			dap.adapters = require("plugins.coding.adapter")
-			dap.configurations = require("plugins.coding.config")
+			dap.adapters = require("plugins.coding.adapters")
+			dap.configurations = require("plugins.coding.configurations")
 		end,
 		keys = function()
 			local dap, dapui, dap_widgets = require("dap"), require("dapui"), require("dap.ui.widgets")
@@ -204,7 +204,7 @@ return {
 					local argv = { ... }
 					timer:start(ms, 0, function()
 						timer:stop()
-						vim.schedule_wrap(fn)(unpack(argv))
+						vim.schedule_wrap(fn)(table.unpack(argv))
 					end)
 				end
 			end

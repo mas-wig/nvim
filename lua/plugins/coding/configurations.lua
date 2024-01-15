@@ -2,26 +2,6 @@ local C = {}
 
 local cache = { cpp = { args = {} } }
 
--- C.go = {
--- 	{ type = "delve", name = "Debug", request = "launch", program = "${file}" },
--- 	{ type = "delve", name = "Debug Package", request = "launch", program = "${fileDirname}" },
--- 	{
--- 		type = "delve",
--- 		name = "Attach",
--- 		mode = "local",
--- 		request = "attach",
--- 		processId = require("dap.utils").pick_process,
--- 	},
--- 	{ type = "delve", name = "Debug test", request = "launch", mode = "test", program = "${file}" },
--- 	{
--- 		type = "delve",
--- 		name = "Debug test (go.mod)",
--- 		request = "launch",
--- 		mode = "test",
--- 		program = "./${relativeFileDirname}",
--- 	},
--- }
-
 C.cpp = {
 	{
 		type = "codelldb",
